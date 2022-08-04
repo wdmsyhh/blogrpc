@@ -1,0 +1,10 @@
+type: google.api.Service
+config_version: 3
+
+http:
+  rules:
+    - selector: blogrpc.member.MemberService.GetMember
+      post: /v1/members/get
+      body: "*"
+      additional_bindings:
+        - get: /v1/members/{id}

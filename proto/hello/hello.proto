@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package blogrpc.hello;
+
+option go_package = "./hello";
+
+message StringMessage {
+  string value = 1;
+}

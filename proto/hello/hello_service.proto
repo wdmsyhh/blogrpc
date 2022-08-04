@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package blogrpc.hello;
+
+option go_package = "./hello";
+
+import "hello.proto";
+
+service HelloService {
+  rpc Hello(StringMessage) returns (StringMessage);
+}

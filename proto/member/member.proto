@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package blogrpc.member;
+
+option go_package = "./member";
+
+message GetMemberRequest {
+  string id = 1;
+}
+
+message GetMemberResponse {
+  string id = 1;
+  string name = 2;
+  int64 age = 3;
+}

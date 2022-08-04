@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package blogrpc.member;
+
+option go_package = "./member";
+
+import "member.proto";
+
+service MemberService {
+  rpc GetMember(GetMemberRequest) returns (GetMemberResponse);
+}
