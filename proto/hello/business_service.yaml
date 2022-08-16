@@ -3,7 +3,7 @@ config_version: 3
 
 http:
   rules:
-    - selector: blogrpc.hello.HelloService.Hello
+    - selector: blogrpc.hello.HelloService.SayHello
       post: /v1/example/hello
       body: "*"
       additional_bindings:

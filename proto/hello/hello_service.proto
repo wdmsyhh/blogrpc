@@ -7,5 +7,5 @@ option go_package = "./hello";
 import "hello.proto";
 
 service HelloService {
-  rpc Hello(StringMessage) returns (StringMessage);
+  rpc SayHello(StringMessage) returns (StringMessage);
 }

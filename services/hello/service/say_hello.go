@@ -7,12 +7,12 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-func (HelloService) Hello(ctx context.Context, req *hello.StringMessage) (*hello.StringMessage, error) {
+func (HelloService) SayHello(ctx context.Context, req *hello.StringMessage) (*hello.StringMessage, error) {
 
 	md, ok := metadata.FromIncomingContext(ctx)
 
 	fmt.Println(ok)
 	fmt.Println(md)
 
-	return &hello.StringMessage{Value: "hello"}, nil
+	return &hello.StringMessage{Value: req.Value}, nil
 }
