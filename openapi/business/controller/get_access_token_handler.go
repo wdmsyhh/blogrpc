@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var testKey = []byte("123")
+
 const EXPIRE_TIME = 60 * 60
 
 type FormGetAccessToken struct {
@@ -74,7 +76,7 @@ func generateAccessToken(appId, appSecret string, expireTime int64) (string, err
 	token.Claims = claims
 	token.Header = header
 
-	out, err := token.SignedString([]byte("123"))
+	out, err := token.SignedString(testKey)
 
 	if err != nil {
 		return "", err

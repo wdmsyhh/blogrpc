@@ -16,7 +16,7 @@ func Auth(c *gin.Context) {
 	}
 
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("123"), nil
+		return testKey, nil
 	})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, map[string]string{
