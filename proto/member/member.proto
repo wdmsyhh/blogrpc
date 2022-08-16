@@ -13,3 +13,8 @@ message GetMemberResponse {
   string name = 2;
   int64 age = 3;
 }
+
+message CreateMemberRequest {
+  string name = 1;
+  int64 age = 2;
+}

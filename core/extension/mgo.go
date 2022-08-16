@@ -27,7 +27,7 @@ func (*proxyClientSelector) GetClient(ctx context.Context, collectionName string
 }
 
 func getClient(ctx context.Context, collection string) *qmgo.QmgoClient {
-	client := TenantDBConnector.GetClient(ctx)
+	client := TenantDBConnector.GetClient(ctx, collection)
 	return client
 }
 

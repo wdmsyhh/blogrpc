@@ -4,8 +4,10 @@ package blogrpc.member;
 
 option go_package = "./member";
 
-import "member.proto";
+import "member/member.proto";
+import "common/response/response.proto";
 
 service MemberService {
   rpc GetMember(GetMemberRequest) returns (GetMemberResponse);
+  rpc CreateMember(CreateMemberRequest) returns (common.response.EmptyResponse);
 }

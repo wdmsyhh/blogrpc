@@ -8,3 +8,6 @@ http:
       body: "*"
       additional_bindings:
         - get: /v1/members/{id}
+    - selector: blogrpc.member.MemberService.CreateMember
+      post: /v1/members
+      body: "*"

@@ -4,7 +4,7 @@ package blogrpc.hello;
 
 option go_package = "./hello";
 
-import "hello.proto";
+import "hello/hello.proto";
 
 service HelloService {
   rpc SayHello(StringMessage) returns (StringMessage);

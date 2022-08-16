@@ -17,11 +17,11 @@ type tenantDBConnector struct {
 }
 
 type DBConnector interface {
-	GetClient(ctx context.Context) *qmgo.QmgoClient
+	GetClient(ctx context.Context, collection string) *qmgo.QmgoClient
 }
 
-func (*tenantDBConnector) GetClient(ctx context.Context) *qmgo.QmgoClient {
-	cli, err := qmgo.Open(ctx, &qmgo.Config{Uri: "mongodb://localhost:27011", Database: "class", Coll: "user", Auth: &qmgo.Credential{
+func (*tenantDBConnector) GetClient(ctx context.Context, collection string) *qmgo.QmgoClient {
+	cli, err := qmgo.Open(ctx, &qmgo.Config{Uri: "mongodb://localhost:27011", Database: "class", Coll: collection, Auth: &qmgo.Credential{
 		Username: "admin",
 		Password: "123456",
 	},
