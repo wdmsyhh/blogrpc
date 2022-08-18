@@ -2,7 +2,7 @@ package main
 
 import (
 	"blogrpc/proto/hello"
-	"blogrpc/services/hello/service"
+	"blogrpc/service/hello/service"
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"

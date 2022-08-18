@@ -2,7 +2,7 @@ package main
 
 import (
 	"blogrpc/proto/member"
-	"blogrpc/services/member/service"
+	"blogrpc/service/member/service"
 	"google.golang.org/grpc"
 	"log"
 	"net"

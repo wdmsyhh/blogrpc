@@ -3,8 +3,8 @@ package service
 import (
 	"blogrpc/proto/hello"
 	"blogrpc/proto/member"
-	"blogrpc/services/member/model"
-	"blogrpc/services/share"
+	"blogrpc/service/member/model"
+	"blogrpc/service/share"
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

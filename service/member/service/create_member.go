@@ -3,7 +3,7 @@ package service
 import (
 	"blogrpc/proto/common/response"
 	"blogrpc/proto/member"
-	"blogrpc/services/member/model"
+	"blogrpc/service/member/model"
 	"context"
 	"github.com/qiniu/qmgo"
 )
