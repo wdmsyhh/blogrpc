@@ -7,7 +7,7 @@ import (
 )
 
 func GetHelloClient() hello.HelloServiceClient {
-	conn, err := grpc.Dial(":8081", grpc.WithInsecure())
+	conn, err := grpc.Dial("hello:8081", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("cann't connect grpc hello: %v", err)
 	}

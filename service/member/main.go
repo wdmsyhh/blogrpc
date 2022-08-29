@@ -6,10 +6,14 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
 	log.SetFlags(log.Lshortfile)
+
+	signal.Ignore(syscall.SIGHUP)
 
 	lis, err := net.Listen("tcp", ":8082")
 	if err != nil {

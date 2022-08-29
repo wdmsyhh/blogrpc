@@ -20,12 +20,12 @@ func NewGateway(ctx context.Context) (http.Handler, error) {
 
 	var err error
 
-	err = hello.RegisterHelloServiceHandlerFromEndpoint(ctx, mux, ":8081", []grpc.DialOption{grpc.WithInsecure()})
+	err = hello.RegisterHelloServiceHandlerFromEndpoint(ctx, mux, "hello:8081", []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return nil, err
 	}
 
-	err = member.RegisterMemberServiceHandlerFromEndpoint(ctx, mux, ":8082", []grpc.DialOption{grpc.WithInsecure()})
+	err = member.RegisterMemberServiceHandlerFromEndpoint(ctx, mux, "member:8082", []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return nil, err
 	}
