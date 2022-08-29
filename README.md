@@ -1,3 +1,23 @@
 # blogrpc
 
 ## grpc-gateway 和 gin 结合适用的 demo
+
+- 执行 `./proto/gen_stub.sh` proto 生成对应的 go 文件
+- 在 blogrpc 目录下执行 `./build.sh` 构建镜像
+  - 注意：如果打包成镜像，代码中所有访问另一个容器的地方，比如：localhost:8081 需要改成 ${容器别名}:${容器内部端口}
+  - 启动容器：
+  ```shell
+  docker network create my_default
+  # 容器别名是 business
+  docker run -it --rm --name businesstest -p 8080:8080 --network my_default --network-alias business business:v1
+  # 容器别名是 hello
+  docker run -it --rm --name hellotest -p 8081:8081 --network my_default --network-alias hello hello:v1
+  # 容器别名是 member
+  docker run -it --rm --name membertest -p 8082:8082 --network my_default --network-alias member member:v1
+  
+  # 启动 MongoDB 容器，设置用户名密码，容器别名是 mongo
+  docker run -itd --name mongotest -p 27012:27017 --network my_default --network-alias mongo mongo:latest --auth
+  docker exec -it mongotest mongo admin
+  db.createUser({ user:'admin',pwd:'123456',roles:[ { role:'userAdminAnyDatabase', db: 'admin'},"readWriteAnyDatabase"]});
+  db.auth('admin', '123456')
+  ```
