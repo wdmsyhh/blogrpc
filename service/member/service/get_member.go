@@ -1,8 +1,10 @@
 package service
 
 import (
+	"blogrpc/proto/hello"
 	"blogrpc/proto/member"
 	"blogrpc/service/member/model"
+	"blogrpc/service/share"
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -20,10 +22,10 @@ func (MemberService) GetMember(ctx context.Context, req *member.GetMemberRequest
 		return resp, nil
 	}
 
-	//helloResp, err := share.GetHelloClient().SayHello(ctx, &hello.StringMessage{Value: "Hello a"})
-	//if err != nil {
-	//	return nil, err
-	//}
+	helloResp, err := share.GetHelloClient().SayHello(ctx, &hello.StringMessage{Value: "Hello a"})
+	if err != nil {
+		return nil, err
+	}
 
 	id, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
@@ -34,7 +36,7 @@ func (MemberService) GetMember(ctx context.Context, req *member.GetMemberRequest
 		return nil, err
 	}
 
-	//resp.Name = helloResp.Value + dbMember.Name
+	resp.Name = helloResp.Value + dbMember.Name
 	resp.Age = dbMember.Age
 	resp.Id = dbMember.Id.Hex()
 	//resp.Name = helloResp.Value
