@@ -4,7 +4,7 @@
 
 - 执行 `./proto/gen_stub.sh` proto 生成对应的 go 文件
 - 在 blogrpc 目录下执行 `./build.sh` 构建镜像
-  - 注意：如果打包成镜像，代码中所有访问另一个容器的地方，比如：localhost:8081 需要改成 ${容器别名}:${容器内部端口}
+  - 注意：如果打包成镜像，代码中所有访问另一个容器的地方，比如：localhost:8081 需要改成 {容器别名}:{容器内部端口}
   - 启动容器：
   ```shell
   docker network create my_default
