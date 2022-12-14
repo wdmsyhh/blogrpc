@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package blogrpc.common.response;
 
-option go_package = "blogrpc/proto/common/response";
+option go_package = "response";
 
 message EmptyResponse {}

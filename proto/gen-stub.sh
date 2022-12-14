@@ -15,16 +15,22 @@ lm_traverse_dir(){
     done
 }
 # 执行命令
-lm_traverse_dir ${ABSOLUTE_PATH}/common
+#lm_traverse_dir ${ABSOLUTE_PATH}/common
 
 genProto() {
     domain=$1
 #    protoc -I=${ABSOLUTE_PATH}/${domain} --go_out ${ABSOLUTE_PATH}/${domain} --go_opt paths=source_relative --go-grpc_out ${ABSOLUTE_PATH}/${domain} --go-grpc_opt paths=source_relative ${ABSOLUTE_PATH}/${domain}/*.proto
 #    protoc -I=${ABSOLUTE_PATH}/${domain} --grpc-gateway_out ${ABSOLUTE_PATH}/${domain} --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt grpc_api_configuration=${ABSOLUTE_PATH}/${domain}/business_service.yaml ${ABSOLUTE_PATH}/${domain}/*.proto
 
-    protoc -I=${ABSOLUTE_PATH} --go_out ${ABSOLUTE_PATH} --go_opt paths=source_relative --go-grpc_out ${ABSOLUTE_PATH} --go-grpc_opt paths=source_relative ${ABSOLUTE_PATH}/${domain}/*.proto
-    protoc -I=${ABSOLUTE_PATH} --grpc-gateway_out ${ABSOLUTE_PATH} --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt grpc_api_configuration=${ABSOLUTE_PATH}/${domain}/business_service.yaml ${ABSOLUTE_PATH}/${domain}/*.proto
+#    protoc -I=${ABSOLUTE_PATH} --go_out ${ABSOLUTE_PATH} --go_opt paths=source_relative --go-grpc_out ${ABSOLUTE_PATH} --go-grpc_opt paths=source_relative ${ABSOLUTE_PATH}/${domain}/*.proto
+#    protoc -I=${ABSOLUTE_PATH} --grpc-gateway_out ${ABSOLUTE_PATH} --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt grpc_api_configuration=${ABSOLUTE_PATH}/${domain}/business_service.yaml ${ABSOLUTE_PATH}/${domain}/*.proto
+
+command_str="protoc -I. -I${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,plugins=grpc+tag:. ${ABSOLUTE_PATH}/common/response/response.proto"
+echo ${command_str}
+$command_str
+
+#protoc -I. -I${ABSOLUTE_PATH} --go_out=Mcommon/response.proto=${ABSOLUTE_PATH}/common/response,plugins=grpc+tag:. ./common/response/response.proto
 }
 
 genProto hello
-genProto member
+#genProto member

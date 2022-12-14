@@ -15,6 +15,9 @@ message GetMemberResponse {
 }
 
 message CreateMemberRequest {
-  string name = 1;
+  // @required
+  //
+  // 商品名称
+  string name = 1; // valid:"required"
   int64 age = 2;
 }
