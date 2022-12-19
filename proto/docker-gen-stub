@@ -1,0 +1,121 @@
+#!/bin/bash -e
+#
+# Generate go stubs from profo definition
+# Lint proto file definition
+
+# Constant
+#
+# COMMAND_START is the shared protoc command with import options
+COMMAND_START="protoc -I. -I${GOPATH}/src/blogrpc/proto"
+# COMMAND_END is the shared protoc command with import options
+COMMAND_END='plugins=grpc+tag:.'
+# PKG_PATH is the go path for proto stub files
+PKG_PATH='blogrpc/proto'
+
+##################################################
+# mapping all proto files to it's go package
+# Arguments:
+#   None
+# Returns:
+#   String
+##################################################
+gen_proto_mappings() {
+  shopt -s globstar
+  local mappings=''
+  for file in ./**/*.proto; do
+    local trim_prefix=${file#\./}
+    mappings="${mappings}M${trim_prefix}=${PKG_PATH}/${trim_prefix%/*.proto},"
+  done
+  echo "${mappings}"
+  shopt -u globstar
+}
+
+##################################################
+# return folders which contains proto file
+# e.g. reutrn XX if XX/*.proto exists
+# Arguments:
+#   None
+# Returns:
+#   String
+##################################################
+gen_proto_files() {
+  shopt -s globstar
+
+  local proto_files=./**/*.proto
+  local dup_folders=()
+  for file in ${proto_files};do
+    # for a file like ./member/member.proto, we add
+    # './member' into dup_folders
+    dup_folders+=(${file%/*\.proto})
+  done
+
+  # remove duplication
+  folders=($(echo "${dup_folders[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+  echo "${folders[@]}"
+
+  shopt -u globstar
+}
+
+##################################################
+# generate protobuf golang stub file
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+generate_protobuf_stub() {
+  package_map=$(gen_proto_mappings)
+  folders=($(gen_proto_files))
+  for folder in ${folders[@]};do
+    command_str="${COMMAND_START} --go_out=${package_map},${COMMAND_END} $folder/*.proto"
+    echo ${command_str}
+    $command_str
+    echo "Generated stubs for $folder/*.proto"
+  done
+}
+
+clean() {
+  set +e
+  shopt -s globstar
+
+  rm -f ./**/*.pb.go
+  rm -f ./**/*.gw.go
+  rm -f ./**/*.swagger.json
+
+  shopt -u globstar
+  set -e
+}
+
+main() {
+  case "$1" in
+    gateway)
+      if [[ $2 == "" ]]; then
+        echo "Must define configuration file"
+        exit 1
+      fi
+
+      if [[ $2 == "consumer" ]]; then
+        config_file="$2_service_temp.yaml"
+        ./scripts/preprocessConfig/preprocessConfig
+      else
+        config_file="$2_service.yaml"
+      fi
+
+      clean
+      generate_protobuf_stub
+#      generate_gateway_stub "$config_file" "$3"
+#      generate_gateway_loader
+#      generate_clients
+    ;;
+    delete)
+      clean
+    ;;
+    *)
+      clean
+      generate_protobuf_stub
+#      generate_clients
+    ;;
+  esac
+}
+
+main "$@"

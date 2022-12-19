@@ -4,6 +4,7 @@ import (
 	"blogrpc/proto/member"
 	"blogrpc/service/member/service"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"os/signal"
@@ -22,6 +23,7 @@ func main() {
 
 	server := grpc.NewServer()
 	member.RegisterMemberServiceServer(server, &service.MemberService{})
+	reflection.Register(server)
 	err = server.Serve(lis)
 	if err != nil {
 		log.Fatal(err)

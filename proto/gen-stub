@@ -1,0 +1,15 @@
+#! /bin/bash -e
+WORK_DIR=${WORK_DIR:-`cd ${0%/*};pwd`}
+DOCKER_GO_PATH=${DOCKER_GO_PATH-"/srv/go"} # Only used to build proto files
+DOCKER_PROTO_PATH=${DOCKER_GO_PATH}/src/blogrpc/proto
+REGISTRY_HOST=${REGISTRY_HOST:-"registry.ap-southeast-1.aliyuncs.com"}
+ENV=${ENV:-local}
+PROTO_BUILDER_IMAGE=${REGISTRY_HOST}/yhhnamespace/cangkuname:v1
+GEN_STUB_COMMAND="./docker-gen-stub"
+
+docker pull ${PROTO_BUILDER_IMAGE}
+
+docker run --rm -v ${WORK_DIR}:${DOCKER_PROTO_PATH} \
+  -w ${DOCKER_PROTO_PATH} \
+  -e "GOPATH=${DOCKER_GO_PATH}" \
+  ${PROTO_BUILDER_IMAGE} ${GEN_STUB_COMMAND}

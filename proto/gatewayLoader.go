@@ -4,18 +4,15 @@ import (
 	"blogrpc/proto/hello"
 	"blogrpc/proto/member"
 	"context"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/encoding/protojson"
 	"net/http"
 )
 
 func NewGateway(ctx context.Context) (http.Handler, error) {
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-		MarshalOptions: protojson.MarshalOptions{
-			UseEnumNumbers: true,
-			UseProtoNames:  true,
-		},
+		OrigName:     true,
+		EmitDefaults: true,
 	}), runtime.WithIncomingHeaderMatcher(headerMatcherFunc))
 
 	var err error

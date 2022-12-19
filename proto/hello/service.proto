@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package blogrpc.hello;
 
-option go_package = "./hello";
+option go_package = "hello";
 
 import "hello/hello.proto";
 

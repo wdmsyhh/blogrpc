@@ -1,0 +1,30 @@
+#! /bin/bash -e
+
+main() {
+case "$1" in
+    start)
+      trap 'onCtrlC' INT
+      function onCtrlC () {
+          echo -e '\nCtrl+C is captured'
+          gsettings set org.gnome.system.proxy mode 'none'
+      }
+      gsettings set org.gnome.system.proxy mode 'manual'
+      sshpass -p $3 ssh -ND 1080 root@$2
+    ;;
+    down)
+      gsettings set org.gnome.system.proxy mode 'none'
+    ;;
+    *)
+      usage
+    ;;
+  esac
+}
+
+usage() {
+  echo "USAGE: $0 option"
+  echo -e "\nOptions:"
+  echo "    start down"
+  exit 1
+}
+
+main $@
