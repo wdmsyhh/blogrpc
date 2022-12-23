@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package blogrpc.common.request;
+
+option go_package = "request";
+
+message EmptyRequest {}
+
+message DetailRequest {
+  string id = 1; // valid:"objectId"
+}
+
+message MemberIdRequest {
+  string memberId = 1; // valid:"objectId"
+}
+
+message StringIdRequest {
+  string id = 1; // valid:"required"
+}
+
+message IdListRequest {
+  repeated string ids = 1; // valid:"objectIdList"
+}
+
+message StringArrayRequest {
+  repeated string values = 1;
+}
+
+message BoolRequest {
+  bool value = 1;
+}
+
+message ListRequest {
+  map<string, string> query = 1;
+  uint32 page = 2;
+  uint32 perPage = 3;
+}
+
+message ListCondition {
+  // 页码
+  uint32 page = 1;
+  // 每页数据数目
+  uint32 perPage = 2;
+  // 排序字段
+  //
+  // 按字段排序, 例如 ["createdAt", "-createdAt"]
+  repeated string orderBy = 3;
+}
+
+message DetailWithMemberIdRequest {
+  // @required
+  string id = 1; // valid:"required,length(24|24),hexadecimal"
+  // @required
+  //
+  // 用户ID
+  string memberId = 2; // valid:"required,length(24|24),hexadecimal"
+}
+
+message PointRequest {
+  double longitude = 1;
+  double latitude = 2;
+  uint64 minDistance = 3;
+  uint64 maxDistance = 4;
+}
+
+message MaiWebhookEventRequest {
+  string accountId = 1;
+  string memberId = 2;
+  string channelId = 3;
+  string openId = 4;
+  string msgType = 5;
+  string subType = 6;
+  string msgId = 7;
+  int64 createTime = 8;
+  string properties = 9;
+}
+
+message MaiWebhookChannel {
+  string id = 1;
+  string name = 2;
+  string social = 3;
+  string type = 4;
+  string chainCorpChannelId = 5; // 下游企业渠道 id
+}
+
+message MaiWebhookRequest {
+  string id = 1;
+  string type = 2;
+  MaiWebhookChannel channel = 3;
+  string body = 4;
+}
+
+message CustomerEventRequest {
+  string messageId = 1;
+  string memberId = 2;
+  // EvenProperties 的 json 字符串
+  string properties = 3; // valid:"json"
+  string channelId = 4;
+  string openId = 5;
+  string eventName = 6;
+  int64 eventCreatedTime = 7;
+}

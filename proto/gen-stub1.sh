@@ -32,8 +32,10 @@ genProto() {
 #  protoc-gen-go 插件安装:
   ## 我这里用的是老版本 https://github.com/golang/protobuf/releases/tag/v1.3.3
   ## 下载下来之后 cd 到 protoc-gen-go 目录执行 go build, go install 在 GOBIN 目录下会有 protoc-gen-go 可执行文件, 我习惯 cp 到 /usr/local/bin 中
+  ## 也可以直接 go install github.com/golang/protobuf/protoc-gen-go@v1.3.3 安装到 GOBIN 目录中
 # protoc-gen-grpc-gateway 安装：
-  ## go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+  ## 老版本: go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.10.0  不加版本号的时候需要在 go module 项目下执行
+  ## 新版本 go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest 不加版本号的时候需要在 go module 项目下执行
   ## 或者下载 https://github.com/grpc-ecosystem/grpc-gateway/releases/tag/v1.10.0  进入到 protoc-gen-grpc-gateway 目录执行 go build 和 go install
   ## 直接下载可执行文件改名为 protoc-gen-grpc-gateway，但是需要 chmod +x protoc-gen-grpc-gateway 赋予可执行权限
   ## 会在 GOBIN 目录下生成可执行文件 protoc-gen-grpc-gateway
@@ -73,31 +75,32 @@ genProto() {
 
 ## 既可在项目目录 blogrpc 下执行，也可在 proto 目录下执行
 ## 要想把 pb 文件生成到 *.proto 同一目录下， 尾部的 proto 文件必须在一个包下
-#protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=${ABSOLUTE_PATH}/common/response,,plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto
-#protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/hello.proto ${ABSOLUTE_PATH}/hello/service.proto
-#protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/member.proto ${ABSOLUTE_PATH}/member/service.proto
+protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/common/response,,plugins=grpc+retag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto
+protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+retag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/hello.proto ${ABSOLUTE_PATH}/hello/service.proto
+protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+retag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/member.proto ${ABSOLUTE_PATH}/member/service.proto
+
 ## 或者 -I 后面可以不写 = ，也可以没有空格  --go_out 后面也可以不写 =
-protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto
-protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/hello.proto ${ABSOLUTE_PATH}/hello/service.proto
-protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/member.proto ${ABSOLUTE_PATH}/member/service.proto
+#protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto
+#protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/hello.proto ${ABSOLUTE_PATH}/hello/service.proto
+#protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/member.proto ${ABSOLUTE_PATH}/member/service.proto
 
 #command_str="${COMMAND_START} --grpc-gateway_out=${package_map}grpc_api_configuration=$folder/${target_config},allow_delete_body=true:. $folder/*.proto"
 #echo ${command_str}
 
 ## 需要 cd 到 proto 执行才能把生成的 pb 文件跟 *.proto 文件在同一目录，好像不设置 M 也行
 ## 把 pb.gw 文件生成到 *.proto 同一目录下， 尾部的 proto 文件必须在一个包下
-#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/response/response.proto=mairpc/proto/common/response,Mcommon/types/types.proto=mairpc/proto/common/types,grpc_api_configuration=./hello/business_service.yaml,allow_delete_body=true:. ./hello/service.proto ./hello/hello.proto
-#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/benchmark/benchmark.proto=mairpc/proto/common/benchmark,Mcommon/ec/ec.proto=mairpc/proto/common/ec,Mcommon/origin/origin.proto=mairpc/proto/common/origin,Mcommon/request/request.proto=mairpc/proto/common/request,Mcommon/response/response.proto=mairpc/proto/common/response,Mcommon/types/types.proto=mairpc/proto/common/types,grpc_api_configuration=./member/business_service.yaml,allow_delete_body=true:. ./member/service.proto ./member/member.proto
+#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mcommon/types/types.proto=blogrpc/proto/common/types,grpc_api_configuration=./hello/business_service.yaml,allow_delete_body=true:. ./hello/service.proto ./hello/hello.proto
+#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/benchmark/benchmark.proto=blogrpc/proto/common/benchmark,Mcommon/ec/ec.proto=blogrpc/proto/common/ec,Mcommon/origin/origin.proto=blogrpc/proto/common/origin,Mcommon/request/request.proto=blogrpc/proto/common/request,Mcommon/response/response.proto=blogrpc/proto/common/response,Mcommon/types/types.proto=blogrpc/proto/common/types,grpc_api_configuration=./member/business_service.yaml,allow_delete_body=true:. ./member/service.proto ./member/member.proto
 
 ## 在 blogrpc 目录下执行 ./proto/gen-stub1.sh 可以，但是 cd 到 proto 中执行 ./gen-stub1.sh 会报错：
 ### /home/user/GolandProjects/blogrpc/proto/hello/service.proto: Input is shadowed in the --proto_path by "hello/service.proto".  Either use the latter file as your input or reorder the --proto_path so that the former file's location comes first.
-#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/response/response.proto=mairpc/proto/common/response,Mcommon/types/types.proto=mairpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/hello/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/service.proto ${ABSOLUTE_PATH}/hello/hello.proto
-#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/request/request.proto=mairpc/proto/common/request,Mcommon/response/response.proto=mairpc/proto/common/response,Mcommon/types/types.proto=mairpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/member/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/service.proto ${ABSOLUTE_PATH}/member/member.proto
+#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mcommon/types/types.proto=blogrpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/hello/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/service.proto ${ABSOLUTE_PATH}/hello/hello.proto
+#protoc -I. -I/${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/request/request.proto=blogrpc/proto/common/request,Mcommon/response/response.proto=blogrpc/proto/common/response,Mcommon/types/types.proto=blogrpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/member/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/service.proto ${ABSOLUTE_PATH}/member/member.proto
 
 ## 既可在项目目录 blogrpc 下执行，也可在 proto 目录下执行
 ## 要想把 pb 文件生成到 *.proto 同一目录下， 尾部的 proto 文件必须在一个包下
-protoc -I=${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/response/response.proto=mairpc/proto/common/response,Mcommon/types/types.proto=mairpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/hello/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/service.proto ${ABSOLUTE_PATH}/hello/hello.proto
-protoc -I=${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/request/request.proto=mairpc/proto/common/request,Mcommon/response/response.proto=mairpc/proto/common/response,Mcommon/types/types.proto=mairpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/member/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/service.proto ${ABSOLUTE_PATH}/member/member.proto
+protoc -I=${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mcommon/types/types.proto=blogrpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/hello/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/service.proto ${ABSOLUTE_PATH}/hello/hello.proto
+protoc -I=${ABSOLUTE_PATH} --grpc-gateway_out=Mcommon/request/request.proto=blogrpc/proto/common/request,Mcommon/response/response.proto=blogrpc/proto/common/response,Mcommon/types/types.proto=blogrpc/proto/common/types,grpc_api_configuration=${ABSOLUTE_PATH}/member/business_service.yaml,allow_delete_body=true:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/service.proto ${ABSOLUTE_PATH}/member/member.proto
 
 }
 

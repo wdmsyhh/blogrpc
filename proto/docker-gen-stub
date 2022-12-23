@@ -31,6 +31,24 @@ gen_proto_mappings() {
 }
 
 ##################################################
+# mapping all common proto files to it's go package
+# Arguments:
+#   None
+# Returns:
+#   String
+##################################################
+gen_common_proto_mappings() {
+    # shopt -s globstar
+  local mappings=''
+  for file in ./common/*/*.proto; do
+    local trim_prefix=${file#\./}
+    mappings="${mappings}M${trim_prefix}=${PKG_PATH}/${trim_prefix%/*.proto},"
+  done
+  echo "${mappings}"
+  # shopt -u globstar
+}
+
+##################################################
 # return folders which contains proto file
 # e.g. reutrn XX if XX/*.proto exists
 # Arguments:
@@ -68,9 +86,34 @@ generate_protobuf_stub() {
   folders=($(gen_proto_files))
   for folder in ${folders[@]};do
     command_str="${COMMAND_START} --go_out=${package_map},${COMMAND_END} $folder/*.proto"
-    echo ${command_str}
     $command_str
     echo "Generated stubs for $folder/*.proto"
+  done
+}
+
+##################################################
+# generate grpc-gateway stub file
+# Arguments:
+#   param1 - configuration file name (xx.yaml)
+#   param2 - filter mark openapi/backend
+# Returns:
+#   None
+##################################################
+generate_gateway_stub() {
+  package_map=$(gen_common_proto_mappings)
+  folders=($(gen_proto_files))
+  target_config="$1"
+  filter_mark="$2"
+  for folder in ${folders[@]};do
+    if [[ $? -eq 0 && -e "$folder/${target_config}" ]]; then
+      command_str="${COMMAND_START} --grpc-gateway_out=${package_map}grpc_api_configuration=$folder/${target_config},allow_delete_body=true:. $folder/*.proto"
+      $command_str
+      echo "Generated grpc-gateway stubs for $folder/*.proto"
+
+      command_str="${COMMAND_START} --swagger_out=${package_map}grpc_api_configuration=$folder/${target_config},filter_mark=${filter_mark},allow_delete_body=true:. $folder/service.proto"
+      $command_str
+      echo "Generated grpc-gateway swagger for $folder/*.proto"
+    fi
   done
 }
 
@@ -103,7 +146,7 @@ main() {
 
       clean
       generate_protobuf_stub
-#      generate_gateway_stub "$config_file" "$3"
+      generate_gateway_stub "$config_file" "$3"
 #      generate_gateway_loader
 #      generate_clients
     ;;

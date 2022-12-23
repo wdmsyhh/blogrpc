@@ -1,0 +1,275 @@
+syntax = "proto3";
+
+package blogrpc.common.types;
+
+option go_package = "types";
+
+enum RangeType {
+  // [start, end)
+  CLOSE_OPEN = 0;
+  // [start, end]
+  CLOSE_CLOSE = 1;
+  // (start, end)
+  OPEN_OPEN = 2;
+  // (start, end]
+  OPEN_CLOSE = 3;
+  // (-∞, end)
+  INFINITE_OPEN = 4;
+  // (-∞, end]
+  INFINITE_CLOSE = 5;
+  // (start, +∞)
+  OPEN_INFINITE = 6;
+  // [start, +∞)
+  CLOSE_INFINITE = 7;
+}
+
+message DateRange {
+  // 起始时间
+  //
+  // 秒级时间戳
+  int64 start = 1;
+  // 结束时间
+  //
+  // 秒级时间戳
+  int64 end = 2;
+  // 时间范围类型
+  RangeType type = 3;
+}
+
+message IntegerRange {
+  int64 start = 1;
+  int64 end = 2;
+  RangeType type = 3;
+}
+
+message FloatRange {
+  float start = 1;
+  float end = 2;
+  RangeType type = 3;
+}
+
+message Location {
+  string country = 1;
+  string province = 2;
+  string city = 3;
+  string district = 4;
+  string detail = 5;
+}
+
+// Following messages are used to distinguish non-message type "unset" from default value.
+
+message StringValue {
+  string value = 1;
+}
+
+message StringArrayValue {
+  repeated string value = 2;
+}
+
+message StringList {
+  repeated string values = 1;
+}
+
+message BoolValue {
+  bool value = 1;
+}
+
+message DoubleValue {
+  double value = 1;
+}
+
+message DoubleList {
+  repeated double values = 1;
+}
+
+message UIntValue {
+  uint64 value = 1;
+}
+
+message Int64Value {
+  int64 value = 1;
+}
+
+message Int64ArrayValue {
+  repeated int64 value = 1;
+}
+
+message Int64List {
+  repeated int64 values = 1;
+}
+
+message StringDateRange {
+  // 起始时间
+  //
+  // 时间格式需要满足 ISO 8601 标准, 比如2006-01-02T15:04:05Z
+  string start = 1; // valid:"rfc3339,optional"
+  // 结束时间
+  //
+  // 时间格式需要满足 ISO 8601 标准, 比如2006-01-02T15:04:05Z
+  string end = 2; // valid:"rfc3339,optional"
+  // 时间范围类型
+  RangeType type = 3;
+}
+
+message LimitUnit {
+  // 限制类型, total 表示一共有几次机会
+  // monthly 表示每个月里最多有几次机会，weekly 表示每周，
+  // daily 表示每天，hourly 表示每小时，quarterly 表示每季，yearly 表示每年
+  string type = 1;
+  // 限制类型中最多机会数量，配合 type 一起用，可以
+  // 解释成 “每 type 期间内最多有 value 次机会”
+  uint64 value = 2;
+}
+
+message Period {
+  uint64 year = 1;
+  uint64 month = 2;
+  uint64 week = 3;
+  uint64 day = 4;
+  uint64 hour = 5;
+  uint64 minute = 6;
+  uint64 second = 7;
+}
+
+message Address {
+  string province = 1;
+  string city = 2;
+  string district = 3;
+  string detail = 4;
+}
+
+message AddressCoordinate {
+  string province = 1;
+  string city = 2;
+  string district = 3;
+  string detail = 4;
+  double longitude = 5;
+  double latitude = 6;
+}
+
+message Cycle {
+  // "XX-XX"例如"1-12"，"2-28"，"12-1"
+  repeated string yearly = 1;
+  // 1 - 31
+  repeated uint64 monthly = 2;
+  // 0 - 6 分别代表 周日、周一。。。周六
+  repeated uint64 weekly = 3;
+}
+
+message Event {
+  // 发生事件的客户 ID
+  string memberId = 1;
+  // 事件
+  string eventId = 2;
+  // JSON 格式字符串
+  string properties = 3; // valid:"json"
+  string occourredAt = 4;
+  // 每个事件的唯一ID
+  string msgId = 5;
+  // 渠道 ID
+  string channelId = 6;
+}
+
+message CompareRule {
+  // 比较符号
+  //
+  // 比较符号含义可参考 https://gitlab.maiscrm.com/mai/bigdata/home/blob/develop/docs/api.md 中的 operator
+  string operator = 1; // valid:"required,in(IN|NOT_IN|EQUALS|NOT_EQUALS|GT|LT|GTE|LTE|IS_NULL|IS_NOT_NULL|BETWEEN|NOT_BETWEEN|CONTAINS|NOT_CONTAINS|CONTAINS_ANY|NOT_CONTAINS_ANY|RLIKE|NOT_RLIKE)"
+  // 值的类型
+  string type = 2; // valid:"required,in(string|input|date|number|stringArray|bool|domesticAddress)"
+  // 比较值
+  //
+  // string: 对应字符串
+  // input: 对应字符串
+  // date: 数字时间戳的字符串，类似 "1582261808300"，到毫秒为止
+  // number: 数字字符串，类似 "12.345"
+  // stringArray: 字符串数组，用 "str1,str2,str3" 的格式
+  // bool: "true" 或者 "false"
+  // domesticAddress: 国内地址，用 "浙江省,杭州市,拱墅区,详细详细地址" 的格式
+  string value = 3;
+}
+
+message ApplicableStore {
+  // 适用门店设置类型
+  //
+  // all,byConditions,byIncludedIds,byExcludedIds,byLocations,byImportIds
+  string type = 1;
+  // 适用的门店ID列表
+  //
+  // 当 type 为 byIncludedIds 时有效
+  repeated string includedIds = 2;
+  // 不适用的门店ID列表
+  //
+  // 当 type 为 byExcludedIds 时有效
+  repeated string excludedIds = 3;
+  // 按区域选择选择
+  //
+  // 当 type 为 byConditions 或 byLocations 时有效
+  repeated Location locations = 4;
+  // 导入文件 url
+  //
+  // 当 type 为 byImportIds 时有效，从文件中读出来 storeIds，会存到 includedIds 中
+  string url = 5;
+}
+
+message QueryStoreCondition {
+  // 门店筛选条件
+  //
+  // 是否为KA店(ka,nonka,all)
+  string type = 1;
+  // 地理位置
+  Location location = 2;
+  // 区域ID
+  string areaId = 3;
+}
+
+message Utm {
+  // 来源
+  string utmSource = 1;
+  // 媒介
+  string utmMedium = 2;
+  // 内容
+  string utmContent = 3;
+  // 活动
+  string utmCampaign = 4;
+  // 关键词
+  string utmTerm = 5;
+}
+
+message DistributorSelector {
+  // 组织节点 id 列表
+  repeated string ids = 1; // valid:"required,objectIdList"
+  // 组织节点筛选字段
+  //
+  // 筛选所属组织节点：distributorId，筛选所属组织节点到根节点的列表（默认）：distributorIds
+  // 目前只有导购任务支持设置此筛选字段，其余数据只筛选 distributorIds
+  string selectField = 2; // valid:"in(distributorId|distributorIds)"
+}
+
+message DistributorInfo {
+  // 所属节点 Id
+  string distributorId = 1; // valid:"objectId"
+  // 用户/员工所属组织节点列表
+  repeated string distributorIds = 2; // valid:"objectIdList"
+  // 是否忽略全局自动添加组织节点的逻辑
+  bool ignoreAutoCheck = 3;
+}
+
+message DataPermission {
+  // @required
+  //
+  // 数据权限名称
+  string name = 1; // valid:"required"
+  // @required
+  //
+  // 权限类型
+  //
+  // 所有组织节点数据（对应资源的全部权限）：allDistributors，所在组织节点及下属节点数据(默认)：subDistributors，仅所在组织节点：directlyDistributors，自己创建的数据：self，指定资源列表：resourceIds
+  string type = 2; // valid:"required,in(allDistributors|subDistributors|directlyDistributors|self|resourceIds)"
+  // @required
+  //
+  // 资源代码
+  string resource = 3; // valid:"required"
+  // 指定资源列表
+  repeated string resourceIds = 4;
+}

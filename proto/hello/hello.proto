@@ -5,5 +5,6 @@ package blogrpc.hello;
 option go_package = "hello";
 
 message StringMessage {
-  string value = 1;
+  // @required
+  string value = 1; //｀custom_tag1:"custom_value1" custom_tag2:"custom_value2"｀
 }

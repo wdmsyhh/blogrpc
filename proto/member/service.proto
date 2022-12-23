@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package blogrpc.member;
 
-option go_package = "./member";
+option go_package = "member";
 
 import "member/member.proto";
 import "common/response/response.proto";
 
 service MemberService {
   rpc GetMember(GetMemberRequest) returns (GetMemberResponse);
-  rpc CreateMember(CreateMemberRequest) returns (common.response.EmptyResponse);
+  rpc CreateMember(CreateMemberRequest) returns (blogrpc.common.response.EmptyResponse);
 }

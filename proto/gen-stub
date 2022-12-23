@@ -4,8 +4,10 @@ DOCKER_GO_PATH=${DOCKER_GO_PATH-"/srv/go"} # Only used to build proto files
 DOCKER_PROTO_PATH=${DOCKER_GO_PATH}/src/blogrpc/proto
 REGISTRY_HOST=${REGISTRY_HOST:-"registry.ap-southeast-1.aliyuncs.com"}
 ENV=${ENV:-local}
-PROTO_BUILDER_IMAGE=${REGISTRY_HOST}/yhhnamespace/cangkuname:v1
+PROTO_BUILDER_IMAGE=${REGISTRY_HOST}/yhhnamespace/tool-protoc:${ENV}
 GEN_STUB_COMMAND="./docker-gen-stub"
+
+[[ -n $1 ]] && GEN_STUB_COMMAND="${GEN_STUB_COMMAND} $1 $2 $3"
 
 docker pull ${PROTO_BUILDER_IMAGE}
 

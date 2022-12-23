@@ -4,9 +4,8 @@ import (
 	"blogrpc/proto/hello"
 	"blogrpc/service/hello/service"
 	"context"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"net"
 	"net/http"
@@ -34,10 +33,8 @@ func StartGRPCGateway() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-		MarshalOptions: protojson.MarshalOptions{
-			UseEnumNumbers: true,
-			UseProtoNames:  true,
-		},
+		OrigName:     true,
+		EmitDefaults: true,
 	}), runtime.WithIncomingHeaderMatcher(func(headerName string) (string, bool) {
 
 		if headerName == "App-Id" {
