@@ -2,4 +2,3 @@
 proto/*/*pb.go
 proto/*/*pb.gw.go
 proto/*/*/*pb.go
-ken/

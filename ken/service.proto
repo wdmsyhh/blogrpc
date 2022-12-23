@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package blogrpc.ken;
+
+option go_package = "ken";
+
+import "ken/hello.proto";
+
+service HelloService {
+  rpc SayHello(StringMessage) returns (StringMessage);
+}

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package blogrpc.ken;
+
+option go_package = "ken";
+
+message StringMessage {
+  // @required
+  // valid:"required,in(aaa|bbb)" xml:"id,omitempty"
+  // 注释
+  string value = 1; // valid:"required,in(aaa|bbb)" xml:"id,omitempty"
+  // 会员
+  message Member {
+    string Name = 1; // valid:"required,in(aaa|bbb)" xml:"id,omitempty"
+    int64 age = 2; // valid:"required,in(aaa|bbb)" xml:"id,omitempty"
+  };
+  User User = 2; // valid:"required,in(aaa|bbb)" xml:"id,omitempty"
+}
+
+message User {
+  string userName = 1; // valid:"required,in(aaa|bbb)" xml:"id,omitempty"
+}
