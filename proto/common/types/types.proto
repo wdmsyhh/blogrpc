@@ -172,8 +172,6 @@ message Event {
 
 message CompareRule {
   // 比较符号
-  //
-  // 比较符号含义可参考 https://gitlab.maiscrm.com/mai/bigdata/home/blob/develop/docs/api.md 中的 operator
   string operator = 1; // valid:"required,in(IN|NOT_IN|EQUALS|NOT_EQUALS|GT|LT|GTE|LTE|IS_NULL|IS_NOT_NULL|BETWEEN|NOT_BETWEEN|CONTAINS|NOT_CONTAINS|CONTAINS_ANY|NOT_CONTAINS_ANY|RLIKE|NOT_RLIKE)"
   // 值的类型
   string type = 2; // valid:"required,in(string|input|date|number|stringArray|bool|domesticAddress)"
