@@ -27,6 +27,12 @@ func main() {
 	engin.GET("/ping", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
+	engin.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"success": true,
+		})
+	})
 
 	engin.GET("/accessToken", controller.GetAccessTokenHandler)
 

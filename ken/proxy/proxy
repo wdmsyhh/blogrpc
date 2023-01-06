@@ -21,9 +21,12 @@ case "$1" in
 }
 
 usage() {
+  echo "Scientific Internet Access"
   echo "USAGE: $0 option"
   echo -e "\nOptions:"
-  echo "    start down"
+  echo "    start [墙外服务器 IP] [墙外服务器 Password]"
+  echo "    down"
+  echo "Ctrl+C can also close agent"
   exit 1
 }
 
