@@ -1,6 +1,12 @@
 #! /bin/bash -e
 
 main() {
+if [ -z $2 ]; then
+    usage
+fi
+if [ -z $3 ]; then
+    usage
+fi
 case "$1" in
     start)
       trap 'onCtrlC' INT
