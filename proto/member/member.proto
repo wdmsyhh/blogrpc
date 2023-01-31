@@ -5,7 +5,10 @@ package blogrpc.member;
 option go_package = "member";
 
 message GetMemberRequest {
-  string id = 1;
+  // @required
+  //
+  // 客户 id
+  string id = 1; // valid:"required,objectId"
 }
 
 message GetMemberResponse {

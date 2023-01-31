@@ -1,3 +1,5 @@
+支持自定义 tag: https://github.com/golang/protobuf/issues/52
+
 --go_out参数用来指定 protoc-gen-go 插件的工作方式和go代码的生成位置
 
 --go_out主要的两个参数为 plugins 和 paths，分别表示生成go代码所使用的插件和生成的go代码的位置。

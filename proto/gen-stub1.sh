@@ -75,9 +75,9 @@ genProto() {
 
 ## 既可在项目目录 blogrpc 下执行，也可在 proto 目录下执行
 ## 要想把 pb 文件生成到 *.proto 同一目录下， 尾部的 proto 文件必须在一个包下
-protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/common/response,,plugins=grpc+retag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto
-protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+retag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/hello.proto ${ABSOLUTE_PATH}/hello/service.proto
-protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+retag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/member.proto ${ABSOLUTE_PATH}/member/service.proto
+protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/common/response,,plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto
+protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/hello/hello.proto ${ABSOLUTE_PATH}/hello/service.proto
+protoc -I=${ABSOLUTE_PATH} --go_out=Mcommon/response/response.proto=blogrpc/proto/common/response,Mhello/hello.proto=blogrpc/proto/hello,Mhello/service.proto=blogrpc/proto/hello,Mmember/member.proto=blogrpc/proto/member,Mmember/service.proto=blogrpc/proto/member,,plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/member/member.proto ${ABSOLUTE_PATH}/member/service.proto
 
 ## 或者 -I 后面可以不写 = ，也可以没有空格  --go_out 后面也可以不写 =
 #protoc -I ${ABSOLUTE_PATH} --go_out=plugins=grpc+tag:${ABSOLUTE_PATH} ${ABSOLUTE_PATH}/common/response/response.proto

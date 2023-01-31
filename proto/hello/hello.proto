@@ -6,5 +6,5 @@ option go_package = "hello";
 
 message StringMessage {
   // @required
-  string value = 1; //｀custom_tag1:"custom_value1" custom_tag2:"custom_value2"｀
+  string value = 1; // custom_tag1:"custom_value1" custom_tag2:"custom_value2"
 }
