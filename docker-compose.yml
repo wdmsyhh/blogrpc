@@ -1,0 +1,48 @@
+version: '2'
+services:
+  blogrpc-member:
+    build:
+      args:
+        rpcname: member
+    volumes:
+      - ./service/member:/app/member/
+    environment:
+      HOST: 'blogrpc-member'
+      PORT: 1701
+    ports:
+      - 1701:1701
+      - 40001:40000
+    extends:
+      file: docker-compose-common.yml
+      service: blogrpc
+
+  blogrpc-hello:
+    build:
+      args:
+        rpcname: hello
+    volumes:
+      - ./service/hello:/app/hello/
+    environment:
+      HOST: 'blogrpc-hello'
+      PORT: 1701
+    ports:
+      - 1702:1701
+      - 40002:40000
+    extends:
+      file: docker-compose-common.yml
+      service: blogrpc
+
+  api-business:
+    image: registry.ap-southeast-1.aliyuncs.com/yhhnamespace/blogrpc-openapi-business:local
+    volumes:
+      - ./openapi/business:/app/openapi/
+    ports:
+      - 9091:9091
+    extends:
+      file: docker-compose-common.yml
+      service: common
+
+networks:
+  default:
+    external:
+      name: my_default

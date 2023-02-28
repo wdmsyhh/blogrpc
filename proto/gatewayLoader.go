@@ -17,12 +17,12 @@ func NewGateway(ctx context.Context) (http.Handler, error) {
 
 	var err error
 
-	err = hello.RegisterHelloServiceHandlerFromEndpoint(ctx, mux, "localhost:8081", []grpc.DialOption{grpc.WithInsecure()})
+	err = hello.RegisterHelloServiceHandlerFromEndpoint(ctx, mux, "blogrpc-hello:1701", []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return nil, err
 	}
 
-	err = member.RegisterMemberServiceHandlerFromEndpoint(ctx, mux, "localhost:8082", []grpc.DialOption{grpc.WithInsecure()})
+	err = member.RegisterMemberServiceHandlerFromEndpoint(ctx, mux, "blogrpc-member:1701", []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return nil, err
 	}

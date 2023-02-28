@@ -110,7 +110,11 @@ generate_gateway_stub() {
       $command_str
       echo "Generated grpc-gateway stubs for $folder/*.proto"
 
-      command_str="${COMMAND_START} --swagger_out=${package_map}grpc_api_configuration=$folder/${target_config},filter_mark=${filter_mark},allow_delete_body=true:. $folder/service.proto"
+#      command_str="${COMMAND_START} --swagger_out=${package_map}grpc_api_configuration=$folder/${target_config},filter_mark=${filter_mark},allow_delete_body=true:. $folder/service.proto"
+#      $command_str
+#      echo "Generated grpc-gateway swagger for $folder/*.proto"
+
+      command_str="${COMMAND_START} --swagger_out=${package_map}grpc_api_configuration=$folder/${target_config},allow_delete_body=true:. $folder/service.proto"
       $command_str
       echo "Generated grpc-gateway swagger for $folder/*.proto"
     fi

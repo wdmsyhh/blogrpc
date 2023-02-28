@@ -16,7 +16,7 @@ func main() {
 
 	signal.Ignore(syscall.SIGHUP)
 
-	lis, err := net.Listen("tcp", ":8082")
+	lis, err := net.Listen("tcp", ":1701")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

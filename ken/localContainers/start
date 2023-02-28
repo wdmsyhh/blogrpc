@@ -1,0 +1,33 @@
+#! /bin/bash -e
+#docker ps --format {{.Names}}
+start() {
+  local containerNames=(
+scrm-infras-mongodb-1
+#scrm-mairpc-eccampaign-1
+#scrm-mairpc-coupon-1
+scrm-mairpc-account-1
+#scrm-mairpc-product-1
+#scrm-mairpc-marketing-1
+scrm-infras-redis-1
+#scrm-mairpc-campaign-1
+#scrm-infras-monstache-1
+#scrm-mairpc-member-1
+#scrm-openapi-business-1
+#scrm-mairpc-ec-1
+#scrm-mairpc-store-1
+
+scrm-portal-backend-1
+#scrm-portal-frontend-1
+#scrm-mairpc-trade-1
+#scrm-openapi-consumer-1
+#scrm-openapi-oauth-1
+#scrm-mairpc-mall-1
+#scrm-portal-worker-1
+#scrm-portal-h5-1
+  )
+     for name in ${containerNames[@]};do
+        docker start $name
+     done
+}
+
+start

@@ -1,0 +1,83 @@
+#!/bin/bash -e
+
+# Constant
+#
+ENV=${ENV:-'local'}
+# REGISTRY_HOST is docker registry host
+REGISTRY_HOST=${REGISTRY_HOST:-"registry.ap-southeast-1.aliyuncs.com"}
+# GOLANG_DOCKER_IMAGE is golang image used to build go source code
+GOLANG_DOCKER_IMAGE="${REGISTRY_HOST}/yhhnamespace/base-golang:1.19.3-${ENV}"
+# GOPATH_IN_DOCKER is the GOPATH value in docker golang builder container
+GOPATH_IN_DOCKER='/app'
+BLOGRPC_NAMESPACE='blogrpc'
+# BLOGRPC_IN_DOCKER is the blogrpc directory mounted in the docker container
+BLOGRPC_IN_DOCKER="${GOPATH_IN_DOCKER}/src/${BLOGRPC_NAMESPACE}"
+# OPENAPI_IN_DOCKER is the working directory in docker container
+OPENAPI_IN_DOCKER="${GOPATH_IN_DOCKER}/src/${BLOGRPC_NAMESPACE}/openapi/business"
+DOCKER_PROJECT=${DOCKER_PROJECT:-"hh"}
+BUINESS_API_NAME="api-business"
+ROOT_PATH=`cd ${0%/*}; cd ../../..; pwd`
+COMPOSE_FILE="${ROOT_PATH}/docker-compose.yml"
+
+##################################################
+# Build bin and start up with docker
+# Globals:
+#   DOCKER_IMAGE_NAME
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+up_with_docker() {
+  gen_proto_stub
+  build_bin
+
+  docker-compose -f "${COMPOSE_FILE}" -p "${DOCKER_PROJECT}" rm -sf "${BUINESS_API_NAME}"
+  docker-compose -f "${COMPOSE_FILE}" -p "${DOCKER_PROJECT}" up -d "${BUINESS_API_NAME}"
+
+  echo 'Use command below to see logs:'
+  echo "docker-compose -p blogrpc logs -f ${BUINESS_API_NAME}"
+}
+
+##################################################
+# Build binary with docker
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+build_bin() {
+  # use golang image to build openapi bin file
+  docker run --rm -v "${ROOT_PATH}":"${BLOGRPC_IN_DOCKER}" \
+      -w "${OPENAPI_IN_DOCKER}" "${GOLANG_DOCKER_IMAGE}" \
+      bash -c "go build -mod=vendor -o openapi"
+  echo "Built openapi bin file"
+}
+
+######################################################################
+# Generate stub files
+# Globals:
+#   none
+# Arguments:
+#   none
+# Returns:
+#   None
+######################################################################
+gen_proto_stub() {
+  local current_path="${ROOT_PATH}/openapi/business"
+  cd "${ROOT_PATH}/proto"
+  ENV=${ENV} ./gen-stub gateway business
+  cd "${current_path}"
+}
+
+main() {
+  case "$1" in
+    bin)
+      gen_proto_stub
+      build_bin
+      ;;
+    up) up_with_docker ;;
+  esac
+}
+
+main "$@"

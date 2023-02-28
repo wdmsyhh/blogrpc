@@ -1,0 +1,15 @@
+ARG ENV
+FROM registry.ap-southeast-1.aliyuncs.com/yhhnamespace/base-ubuntu:${ENV}
+
+ARG rpcname
+
+COPY $rpcname /app/$rpcname/
+VOLUME /app/$rpcname/
+
+RUN mkdir -p "/etc/service/$rpcname"
+COPY scripts/start-local "/etc/service/$rpcname/run"
+COPY scripts/dlv "/usr/local/bin/"
+
+EXPOSE 1701 40000
+
+WORKDIR /app/$rpcname

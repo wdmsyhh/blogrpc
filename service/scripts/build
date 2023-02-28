@@ -1,0 +1,191 @@
+#!/bin/bash -e
+
+DIRPAHT=$(cd `dirname ${0}`; pwd)
+source "${DIRPAHT}/libs/config.sh"
+
+# Constant
+#
+# WORK_DIR is ~/blogrpc/service/
+WORK_DIR="${WORK_DIR:-"$(get_root_path)/service"}"
+ENV=${ENV:-local}
+# COMPOSE_FILE is docker compose configuration file
+COMPOSE_FILE="$(get_root_path)/docker-compose.yml"
+DOCKER_PROJECT=${DOCKER_PROJECT:-"hh"}
+# REGISTRY_HOST is docker registry host
+REGISTRY_HOST=${REGISTRY_HOST:-"registry.ap-southeast-1.aliyuncs.com"}
+# GOLANG_DOCKER_IMAGE is golang image used to build go source code
+GOLANG_DOCKER_IMAGE="${REGISTRY_HOST}/yhhnamespace/base-golang:1.19.3-${ENV}"
+
+##################################################
+# Generate stub files
+# Globals:
+#   WORK_DIR
+# Arguments:
+#   none
+# Returns:
+#   None
+##################################################
+gen_proto_stub() {
+  cd "${PROTO_PATH}"
+  ./gen-stub
+  cd "${WORK_DIR}"
+}
+
+
+##################################################
+# Interate RPC service repos to apply function
+# Globals:
+#   SERVICE_LIST
+# Arguments:
+#   param1 - function to be applied
+#   param2 - specified repo names (optional)
+# Returns:
+#   None
+##################################################
+iterate_service_repos() {
+  iterate_repos "$1" SERVICE_LIST ${@:2}
+}
+
+##################################################
+# Stop all or specified docker containers
+# started by docker compose
+# Arguments:
+#   param1 - RPC repo names (optional)
+# Returns:
+#   None
+##################################################
+stop() {
+  if [ $# -eq 0 ]; then
+    docker-compose -f "${COMPOSE_FILE}" -p "${DOCKER_PROJECT}" rm -sf
+  else
+    iterate_service_repos 'stop_service' ${@:1}
+  fi
+}
+
+##################################################
+# Stop docker container started by docker compose
+# Arguments:
+#   param1 - RPC repo name
+# Returns:
+#   None
+##################################################
+stop_service() {
+  if is_rpc_repo "$1"; then
+    serv_name="blogrpc-$1"
+    docker-compose -f "${COMPOSE_FILE}" -p "${DOCKER_PROJECT}" rm -sf "${serv_name}"
+  fi
+}
+
+##################################################
+# Interate repos to apply function
+# Arguments:
+#   param1 - function to be applied
+#   param2 - default repos array name
+#   param3 - specified repo names (optional)
+# Returns:
+#   None
+##################################################
+iterate_repos() {
+  repos_name=$2[@]
+  # Set default repos
+  target_repos=("${!repos_name}")
+  # If specified repos are provided
+  if [ $# -gt 2 ]; then
+    repos=${@:3}
+  else
+    repos=${target_repos[@]}
+  fi
+
+  for item in ${repos[@]}
+  do
+    $1 "${item}"
+  done
+}
+
+##################################################
+# Whether a repo is a RPC service repo
+# Globals:
+#   SERVICE_LIST
+# Arguments:
+#   param1 - repo name
+# Returns:
+#   Boolean
+##################################################
+is_rpc_repo() {
+  [[ ${SERVICE_LIST[*]} =~ $1 ]]
+}
+
+##################################################
+# Start specified service with docker compose
+# Globals:
+#   COMPOSE_FILE
+# Arguments:
+#   param1 - RPC repo name
+# Returns:
+#   None
+##################################################
+start_service_with_compose() {
+  build_bin "$1"
+  if is_rpc_repo "$1"; then
+    serv_name="blogrpc-$1"
+    docker-compose -f "${COMPOSE_FILE}" -p "${DOCKER_PROJECT}" up --build -d "${serv_name}"
+  fi
+}
+
+##################################################
+# Build binary files for RPC service
+# Globals:
+#   WORK_DIR
+#   WITHOUT_DOCKER
+#   GOLANG_DOCKER_IMAGE
+#   SERVICE_NAMESPACE
+# Arguments:
+#   param1 - RPC repo name
+# Returns:
+#   None
+##################################################
+build_bin() {
+  echo "Repo $1 exists now"
+  repo=$1
+  if ! is_rpc_repo "${repo}"; then
+    return
+  fi
+  docker run --rm -v ${ROOT_PATH}:"${GOPATH_IN_DOCKER}/src/${BLOGRPC_NAMESPACE}" \
+    -w "${GOPATH_IN_DOCKER}/src/${SERVICE_NAMESPACE}/${repo}" "${GOLANG_DOCKER_IMAGE}" \
+    bash -c "go build -mod=vendor -o ${repo}"
+  echo "Built ${repo} bin file"
+}
+
+##################################################
+# Show usage description
+# Arguments:
+#   None
+# Returns:
+#   None
+##################################################
+usage() {
+  echo "USAGE: $0 option"
+  echo -e "\nOptions:"
+  echo "    up: Start up all the services with docker compose"
+  exit 1
+}
+
+main() {
+  case $1 in
+  up)
+    echo "=============================================="
+    echo "Compose up                                    "
+    echo "=============================================="
+    gen_proto_stub
+    stop ${@:2}
+    iterate_service_repos 'start_service_with_compose' ${@:2}
+    echo "RPC servers are started successful"
+    echo "Notice: If you get errors, it may because your mongodb service of my_default is not available."
+    ;;
+  *)
+    usage
+    ;;
+  esac
+}
+
+main "$@"

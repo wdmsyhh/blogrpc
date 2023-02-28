@@ -1,0 +1,17 @@
+version: '2'
+services:
+  common:
+    environment:
+      ENV: local
+    external_links:
+      - mongotest
+  blogrpc:
+    extends:
+      service: common
+    build:
+      context: ./service/
+      dockerfile: docker/Dockerfile-local
+      args:
+        ENV: local
+    volumes:
+      - ./:/app/src/blogrpc
