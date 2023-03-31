@@ -30,6 +30,15 @@ exec cmd11, args: [b c]
 
 ```
 
+使用 `go run main.go --job=1 --env=p   cmd2 b c d` 的时候执行的是 cmd2 命令:
+```
+product init
+[/tmp/go-build1752896154/b001/exe/main --job=1 --env=p cmd2 b c c]
+p
+true
+exec cmd2, args: [b c d]
+```
+
 ```go
 import (
 	"fmt"
@@ -47,6 +56,7 @@ var (
 
 func init() {
 	RootCmd.AddCommand(cmd1)
+	RootCmd.AddCommand(cmd2)
 	cmd1.AddCommand(cmd11)
 }
 
