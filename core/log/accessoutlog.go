@@ -59,7 +59,7 @@ func (a *accessOutLog) End(ctx context.Context, responseStatus int, remoteAddr, 
 	a.ResponseBodySize = len(responseBody)
 	a.ResponseStatus = responseStatus
 
-	if isRecordResponseBody(ctx) {
+	if IsRecordResponseBody(ctx) {
 		a.Others["responseBody"] = responseBody
 	}
 
@@ -87,7 +87,7 @@ func SwitchOnResponseBodyLog(ctx context.Context) context.Context {
 	return context.WithValue(ctx, RESPONSE_BODY_RECORD_SWITCH, true)
 }
 
-func isRecordResponseBody(ctx context.Context) bool {
+func IsRecordResponseBody(ctx context.Context) bool {
 	record := ctx.Value(RESPONSE_BODY_RECORD_SWITCH)
 	return record != nil && record.(bool)
 }

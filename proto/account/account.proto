@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package mairpc.account;
+
+option go_package = "account";
+
+message SessionValidPeriodResponse {
+float sessionValidPeriod = 1;
+}

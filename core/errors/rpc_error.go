@@ -1,8 +1,5 @@
 package errors
 
-// TODO: Benny Zhou 12/01/2016 - file rpc_error.go should be renamed to Blogrpc_go
-// after the existing file "Blogrpc_error.go" removed.
-
 import (
 	"fmt"
 	"strconv"
@@ -16,8 +13,8 @@ import (
 	grpc_codes "google.golang.org/grpc/codes"
 )
 
-// BlogrpcError defines the status from an RPC.
-type BlogrpcError struct {
+// RPCError defines the status from an RPC.
+type RPCError struct {
 	Code  codes.Code
 	Desc  string
 	Extra map[string]interface{}
@@ -29,7 +26,7 @@ type ErrorField struct {
 }
 
 // Error returns the error information
-func (self BlogrpcError) Error() string {
+func (self RPCError) Error() string {
 	errMsg := fmt.Sprintf("%d%s%s", self.Code, codes.SEPARATOR, self.Desc)
 	if self.Extra != nil {
 		buf, err := json.Marshal(self.Extra)
@@ -41,76 +38,76 @@ func (self BlogrpcError) Error() string {
 	return errMsg
 }
 
-// NewBlogrpcError returns system pre-defined error
-func NewBlogrpcError(code codes.Code, desc string) *BlogrpcError {
-	rpcError := BlogrpcError{
+// NewRPCError returns system pre-defined error
+func NewRPCError(code codes.Code, desc string) *RPCError {
+	RPCError := RPCError{
 		Code: code,
 		Desc: desc,
 	}
 
-	return &rpcError
+	return &RPCError
 }
 
-func NewBlogrpcErrorWithExtra(code codes.Code, desc string, extra map[string]interface{}) *BlogrpcError {
-	rpcError := BlogrpcError{
+func NewRPCErrorWithExtra(code codes.Code, desc string, extra map[string]interface{}) *RPCError {
+	RPCError := RPCError{
 		Code:  code,
 		Desc:  desc,
 		Extra: extra,
 	}
 
-	return &rpcError
+	return &RPCError
 }
 
-func ToblogrpcError(err error) *BlogrpcError {
-	if BlogrpcError, ok := err.(*BlogrpcError); ok {
-		return BlogrpcError
+func ToRPCError(err error) *RPCError {
+	if RPCError, ok := err.(*RPCError); ok {
+		return RPCError
 	}
 
-	grpcErrorCode := grpc.Code(err)
-	grpcErrorDesc := grpc.ErrorDesc(err)
-	if grpcErrorCode != grpc_codes.Unknown {
-		return NewInternal(grpcErrorDesc)
+	gRPCErrorCode := grpc.Code(err)
+	gRPCErrorDesc := grpc.ErrorDesc(err)
+	if gRPCErrorCode != grpc_codes.Unknown {
+		return NewInternal(gRPCErrorDesc)
 	}
 
-	BlogrpcCodeStr, BlogrpcDesc, BlogrpcExtraStr := parseGrpcDesc(grpcErrorDesc)
+	BlogrpcCodeStr, BlogrpcDesc, BlogrpcExtraStr := parseGrpcDesc(gRPCErrorDesc)
 	BlogrpcCode, _ := strconv.ParseUint(BlogrpcCodeStr, 10, 0)
 	var BlogrpcExtra map[string]interface{}
 	json.Unmarshal([]byte(BlogrpcExtraStr), &BlogrpcExtra)
-	return &BlogrpcError{
+	return &RPCError{
 		Code:  codes.Code(uint32(BlogrpcCode)),
 		Desc:  BlogrpcDesc,
 		Extra: BlogrpcExtra,
 	}
 }
 
-func ConvertRecoveryError(err interface{}) *BlogrpcError {
-	BlogrpcError, ok := err.(*BlogrpcError)
+func ConvertRecoveryError(err interface{}) *RPCError {
+	BlogRPCError, ok := err.(*RPCError)
 	if ok {
-		return BlogrpcError
+		return BlogRPCError
 	} else {
-		rpcError, ok := err.(error)
+		RPCError, ok := err.(error)
 		if ok {
-			return NewInternal(rpcError.Error())
+			return NewInternal(RPCError.Error())
 		} else {
 			return NewUnknowError(err)
 		}
 	}
 }
 
-func NewInternal(desc string) *BlogrpcError {
-	return &BlogrpcError{
+func NewInternal(desc string) *RPCError {
+	return &RPCError{
 		Code: codes.InternalServerError,
 		Desc: desc,
 	}
 }
 
 func IsRPCInternalError(err error) bool {
-	BlogrpcErr, ok := err.(*BlogrpcError)
+	BlogrpcErr, ok := err.(*RPCError)
 	return ok && BlogrpcErr.Code == codes.InternalServerError
 }
 
-func NewUnknowError(err interface{}) *BlogrpcError {
-	return &BlogrpcError{
+func NewUnknowError(err interface{}) *RPCError {
+	return &RPCError{
 		Code: codes.UnknownError,
 		Desc: fmt.Sprintf("unknown error: %v", err),
 	}
@@ -129,13 +126,13 @@ func parseGrpcDesc(errorMsg string) (string, string, string) {
 		return errorMsg[0:codeEndIndex], errorMsg[descStartIndex:len(errorMsg)], ""
 	}
 
-	BlogrpcErrMsg := strings.Split(errorMsg, codes.SEPARATOR)
+	RpcErrMsg := strings.Split(errorMsg, codes.SEPARATOR)
 
-	return BlogrpcErrMsg[0], BlogrpcErrMsg[1], BlogrpcErrMsg[2]
+	return RpcErrMsg[0], RpcErrMsg[1], RpcErrMsg[2]
 }
 
 func NewInvalidParamsError(extraMsg map[string]interface{}) error {
-	return NewBlogrpcErrorWithExtra(codes.InvalidParams, "Invalid Params", extraMsg)
+	return NewRPCErrorWithExtra(codes.InvalidParams, "Invalid Params", extraMsg)
 }
 
 func NewNotExistsError(field string) error {
@@ -247,7 +244,7 @@ func IsInvalidArgumentError(err error) bool {
 }
 
 func isError(err error, field, code string) bool {
-	maiErr := ToblogrpcError(err)
+	maiErr := ToRPCError(err)
 	if maiErr == nil {
 		return false
 	}

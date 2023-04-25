@@ -3,6 +3,14 @@ services:
   common:
     environment:
       ENV: local
+      CACHE_HOST: redis
+      CACHE_PORT: '6379'
+      CACHE_PASSWORD: ''
+      RESQUE_HOST: redis
+      RESQUE_PORT: '6379'
+      RESQUE_PASSWORD: ''
+      MONGO_MASTER_DSN: mongodb://root:root@mongo:27017/portal-master
+      MONGO_MASTER_REPLSET: none
     external_links:
       - mongotest
   blogrpc:
