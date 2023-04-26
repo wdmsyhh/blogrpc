@@ -75,11 +75,11 @@ func parseErr(err error) (*status.Status, *errorBody) {
 		return s, &errorBody{Message: s.Message()}
 	}
 
-	if blogrpcErr, ok := err.(*BlogrpcError); ok {
+	if rpcErr, ok := err.(*RPCError); ok {
 		return newInvalidArgumentStatus(), &errorBody{
-			Message: blogrpcErr.Desc,
-			Code:    int32(blogrpcErr.Code),
-			Errors:  blogrpcErr.Extra,
+			Message: rpcErr.Desc,
+			Code:    int32(rpcErr.Code),
+			Errors:  rpcErr.Extra,
 		}
 	}
 

@@ -1,0 +1,12 @@
+logger-level = "debug"
+
+[extension-mgo]
+placeholder = ""
+
+[extension-redis]
+db = "1"
+resque-db = "2"
+response-cache-db = "5"
+
+[extension-request]
+timeout = 5

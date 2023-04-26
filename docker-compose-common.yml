@@ -11,8 +11,6 @@ services:
       RESQUE_PASSWORD: ''
       MONGO_MASTER_DSN: mongodb://root:root@mongo:27017/portal-master
       MONGO_MASTER_REPLSET: none
-    external_links:
-      - mongotest
   blogrpc:
     extends:
       service: common

@@ -228,7 +228,7 @@ func Http422(c *gin.Context, err error) bool {
 	return false
 }
 
-func ParseRPCError(c *gin.Context, err *blogrpc_error.BlogrpcError) bool {
+func ParseRPCError(c *gin.Context, err *blogrpc_error.RPCError) bool {
 	if err != nil {
 		HttpErrorUnprocessableEntity(c, err.Desc)
 		return true
@@ -236,7 +236,7 @@ func ParseRPCError(c *gin.Context, err *blogrpc_error.BlogrpcError) bool {
 	return false
 }
 
-func ParseRPCErrorWithErrorMap(c *gin.Context, err *blogrpc_error.BlogrpcError, errorMap map[blogrpc_codes.Code]string) bool {
+func ParseRPCErrorWithErrorMap(c *gin.Context, err *blogrpc_error.RPCError, errorMap map[blogrpc_codes.Code]string) bool {
 	if err != nil {
 		message := err.Desc
 		if msg, ok := errorMap[err.Code]; ok {

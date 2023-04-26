@@ -4,7 +4,8 @@
 
 - 执行 `./proto/gen_stub.sh` proto 生成对应的 go 文件
 - 在 blogrpc 目录下执行 `./build.sh` 构建镜像
-  - 注意：如果打包成镜像，代码中所有访问另一个容器的地方，比如：localhost:8081 需要改成 {容器别名}:{容器内部端口}
+  - 注意：如果打包成镜像，代码中所有访问另一个容器的地方，比如：localhost:8081 需要改成 {容器别名或容器名}:{容器内部端口}
+  - 不打包成镜像直接代码调试的时候需要在 /etc/hosts 文件中配置 {容器别名或容器名} 对应的容器 IP，但是代码中访问的应该是 {容器别名或容器名}:{容器内部端口}
   - 启动容器：
   ```shell
   docker network create my_default
@@ -18,6 +19,14 @@
   # 启动 MongoDB 容器，设置用户名密码，容器别名是 mongo
   docker run -itd --name mongotest -p 27012:27017 --network my_default --network-alias mongo mongo:latest --auth
   docker exec -it mongotest mongo admin
-  db.createUser({ user:'admin',pwd:'123456',roles:[ { role:'userAdminAnyDatabase', db: 'admin'},"readWriteAnyDatabase"]});
-  db.auth('admin', '123456')
+  db.createUser({ user:'root',pwd:'root',roles:[ { role:'userAdminAnyDatabase', db: 'admin'},"readWriteAnyDatabase"]});
+  db.auth('root', 'root')
+  
+  # 启动 Redis 容器
+  docker pull redis:latest
+  docker run -itd --name redis -p 6379:6379 redis
+  docker exec -it redis /bin/bash
+  redis-cli
+  set key1 value1
   ```
+  

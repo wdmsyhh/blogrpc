@@ -377,7 +377,7 @@ func ParseURL(url string) (*qmgo.Config, *options.ClientOptions, error) {
 		Uri:      info.uri,
 		Database: info.db,
 	}
-	// todo @alomerry wu
+
 	poolLimit := 0
 	opts := options.Client()
 	opts.SetAppName(util.GetMongoAppName())
@@ -495,8 +495,8 @@ func isOptSep(c rune) bool {
 //func (*tenantDBConnector) GetClient(ctx context.Context, collection string) *qmgo.QmgoClient {
 //	// 如果是在容器内链接另一个 mongo 容器，需要使用 mongo 容器的内部端口
 //	cli, err := qmgo.Open(ctx, &qmgo.Config{Uri: "mongodb://mongo:27017", Database: "class", Coll: collection, Auth: &qmgo.Credential{
-//		Username: "admin",
-//		Password: "123456",
+//		Username: "root",
+//		Password: "root",
 //	},
 //	})
 //	if err != nil {

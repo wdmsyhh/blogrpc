@@ -8,6 +8,7 @@ import (
 	flag "github.com/spf13/pflag"
 	conf "github.com/spf13/viper"
 	"log"
+	"os"
 	"os/signal"
 	"syscall"
 )
@@ -23,11 +24,19 @@ func main() {
 	signal.Ignore(syscall.SIGHUP)
 
 	loadConfig()
-	coreLog.InitLogger(
-		conf.GetString("logger-level"),
-		*env,
-		"openapi",
-	)
+
+	conf.Set("logger-level", "debug")
+	os.Setenv("MONGO_MASTER_DSN", "mongodb://root:root@mongo:27017/portal-master?authSource=admin")
+	os.Setenv("MONGO_MASTER_REPLSET", "none")
+	os.Setenv("CACHE_HOST", "redis")
+	os.Setenv("CACHE_PORT", "6379")
+	os.Setenv("RESQUE_HOST", "redis")
+	os.Setenv("RESQUE_PORT", "6379")
+	conf.Set("extension-redis", map[string]interface{}{
+		"db":        "1", // 注意 redis 使用的是哪个 db，每个服务需要一样才能取到对应的值
+		"resque-db": "2",
+	})
+	coreLog.InitLogger(conf.GetString("logger-level"), *env, "openapi")
 
 	log.Printf("API server starts at env: %s, version: %s", *env, util.GetVersion())
 	s := server.NewApiServer(*host, *port, util.GetVersion(), *env)
@@ -77,7 +86,9 @@ func loadConfig() {
 	confFormat := "%s/%s.toml"
 
 	// read common config
-	conf.SetConfigFile(fmt.Sprintf(confFormat, "./conf", *env))
+
+	conf.SetConfigFile(fmt.Sprintf(confFormat, "/home/user/GolandProjects/blogrpc/openapi/business/conf", *env))
+	//conf.SetConfigFile(fmt.Sprintf(confFormat, "./conf", *env))
 	err := conf.MergeInConfig()
 	if err != nil {
 		log.Println(err)
