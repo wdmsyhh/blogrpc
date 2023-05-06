@@ -87,6 +87,7 @@ func loadConfig() {
 
 	// read common config
 
+	// 调试时设置绝对路径，不然找不到文件
 	conf.SetConfigFile(fmt.Sprintf(confFormat, "/home/user/GolandProjects/blogrpc/openapi/business/conf", *env))
 	//conf.SetConfigFile(fmt.Sprintf(confFormat, "./conf", *env))
 	err := conf.MergeInConfig()
