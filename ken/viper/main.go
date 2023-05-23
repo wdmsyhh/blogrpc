@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+// 注意：设置环境变量时应该大写，不然获取不到，比如 export PRE_ENV1=abc
+// 需要在同一个终端执行才行
+// 进入到 main 目录执行 go run main.go
+
 func main() {
 	viper.SetEnvPrefix("pre")
 	viper.AutomaticEnv()

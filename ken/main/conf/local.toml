@@ -1,0 +1,9 @@
+vod-provider = "tencent"
+
+[extension-mgo]
+placeholder = "aaaa"
+
+[extension-redis]
+db = "1"
+resque-db = "2"
+response-cache-db = "5"
