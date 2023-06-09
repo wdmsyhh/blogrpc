@@ -17,7 +17,7 @@
   docker run -it --rm --name membertest -p 8082:8082 --network my_default --network-alias member member:v1
   
   # 启动 MongoDB 容器，设置用户名密码，容器别名是 mongo
-  docker run -itd --name mongotest -p 27012:27017 --network my_default --network-alias mongo mongo:latest --auth
+  docker run -itd --name mongotest -p 27012:27017 --network my_default --network-alias mongo mongo:4.2 --auth
   docker exec -it mongotest mongo admin
   db.createUser({ user:'root',pwd:'root',roles:[ { role:'userAdminAnyDatabase', db: 'admin'},"readWriteAnyDatabase"]});
   db.auth('root', 'root')

@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.8.1
+	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/golang/protobuf v1.5.3
 	github.com/gomodule/redigo v1.8.9
@@ -30,6 +31,7 @@ require (
 	golang.org/x/net v0.8.0
 	golang.org/x/text v0.8.0
 	google.golang.org/grpc v1.51.0
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 	gopkg.in/tylerb/graceful.v1 v1.2.15
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.23.8

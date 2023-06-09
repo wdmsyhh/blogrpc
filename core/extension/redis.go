@@ -634,7 +634,7 @@ func InitRedisPool(host, pass, db string) (*redis.Pool, error) {
 		},
 	}
 
-	//test Redis connection
+	//mongo Redis connection
 	conn := pool.Get()
 	defer conn.Close() //close it to pool after tested
 

@@ -125,7 +125,7 @@ type XlsxCell struct {
 //	if err != nil {
 //	    panic(err)
 //	}
-//	fp, err := os.OpenFile("./test.xlsx", os.O_RDWR|os.O_CREATE, 0755)
+//	fp, err := os.OpenFile("./mongo.xlsx", os.O_RDWR|os.O_CREATE, 0755)
 //	if err != nil {
 //	    panic(err)
 //	}

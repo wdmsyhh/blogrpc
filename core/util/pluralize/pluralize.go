@@ -236,7 +236,7 @@ func restoreCase(word string, token string) string {
 		return strings.ToUpper(token[:1]) + strings.ToLower(token[1:])
 	}
 
-	// Lower cased words. E.g. "test".
+	// Lower cased words. E.g. "mongo".
 	return strings.ToLower(token)
 }
 
@@ -323,7 +323,7 @@ func (c *Client) loadPluralizationRules() {
 		{`(?i)s?$`, `s`},
 		{`(?i)[^[:ascii:]]$`, `$0`},
 		{`(?i)([^aeiou]ese)$`, `$1`},
-		{`(?i)(ax|test)is$`, `$1es`},
+		{`(?i)(ax|mongo)is$`, `$1es`},
 		{`(?i)(alias|[^aou]us|t[lm]as|gas|ris)$`, `$1es`},
 		{`(?i)(e[mn]u)s?$`, `$1s`},
 		{`(?i)([^l]ias|[aeiou]las|[ejzr]as|[iu]am)$`, `$1`},
@@ -370,7 +370,7 @@ func (c *Client) loadSingularizationRules() {
 		{`(?i)(x|ch|ss|sh|zz|tto|go|cho|alias|[^aou]us|t[lm]as|gas|(?:her|at|gr)o|[aeiou]ris)(?:es)?$`, `$1`},
 		{`(?i)(analy|diagno|parenthe|progno|synop|the|empha|cri|ne)(?:sis|ses)$`, `$1sis`},
 		{`(?i)(movie|twelve|abuse|e[mn]u)s$`, `$1`},
-		{`(?i)(test)(?:is|es)$`, `$1is`},
+		{`(?i)(mongo)(?:is|es)$`, `$1is`},
 		{`(?i)(alumn|syllab|vir|radi|nucle|fung|cact|stimul|termin|bacill|foc|uter|loc|strat)(?:us|i)$`, `$1us`},              //nolint:lll,misspell
 		{`(?i)(agend|addend|millenni|dat|extrem|bacteri|desiderat|strat|candelabr|errat|ov|symposi|curricul|quor)a$`, `$1um`}, //nolint:lll,misspell
 		{`(?i)(apheli|hyperbat|periheli|asyndet|noumen|phenomen|criteri|organ|prolegomen|hedr|automat)a$`, `$1on`},
