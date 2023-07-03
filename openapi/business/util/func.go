@@ -42,7 +42,7 @@ const (
 	INVALID            = "invalid"
 	MISSING_FIELD      = "missing_field"
 	DATE_FORMAT        = "2006-01-02"
-	SECRET_HASH_PREFIX = "scrm:jwt:"
+	SECRET_HASH_PREFIX = "my:jwt:"
 
 	TOKEN_SUB_PREFIX   = "app:"          // the prefix for accessToken's sub field
 	TOKEN_EXIST_PREFIX = "access_token:" // used to check if the accessToken is deleted

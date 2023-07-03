@@ -2,9 +2,9 @@
 #docker ps --format {{.Names}}
 start() {
   local containerNames=(
-scrm-infras-mongodb-1
-scrm-blogrpc-account-1
-scrm-infras-redis-1
+my-infras-mongodb-1
+my-blogrpc-account-1
+my-infras-redis-1
   )
      for name in ${containerNames[@]};do
         docker start $name
