@@ -1,4 +1,4 @@
-package mairpc
+package blogrpc
 
 import (
 	"blogrpc/core/client"

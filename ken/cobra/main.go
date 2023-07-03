@@ -11,7 +11,7 @@ import (
 var (
 	env = flag.String("env", "local", "the running environment")
 	// job flags
-	enableJob = flag.Bool("job", false, "mairpc job name")
+	enableJob = flag.Bool("job", false, "blogrpc job name")
 )
 
 func init() {

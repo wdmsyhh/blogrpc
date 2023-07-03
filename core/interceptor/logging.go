@@ -82,7 +82,7 @@ func recordAccessLog(ctx context.Context, accessLog *log.AccessLog, err error, c
 	accessLog.StatusCode = getStatusCode(grpc.Code(err))
 	accessLog.RequestId = util.ExtractRequestIDFromCtx(ctx)
 	accessLog.TenantId = util.GetAccountId(ctx)
-	accessLog.Others["category"] = "mairpc"
+	accessLog.Others["category"] = "blogrpc"
 	accessLog.Others["env"] = conf["env"]
 	accessLog.Others["service"] = conf["service"]
 	accessLog.Others["address"] = conf["address"]
