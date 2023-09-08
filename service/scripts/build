@@ -182,6 +182,12 @@ main() {
     echo "RPC servers are started successful"
     echo "Notice: If you get errors, it may because your mongodb service of my_default is not available."
     ;;
+  bin)
+    echo "=============================================="
+    echo "Build service binary                          "
+    echo "=============================================="
+    iterate_service_repos 'build_bin' ${@:2}
+    ;;
   *)
     usage
     ;;

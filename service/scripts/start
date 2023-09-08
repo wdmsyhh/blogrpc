@@ -1,0 +1,18 @@
+#!/bin/bash
+
+host=$(ifconfig eth0 | grep 'inet addr' | cut -d ':' -f2 | cut -d ' ' -f1)
+
+# Constant
+#
+# SHORT_SERVICE_NAME is the short service name (member, coupon ...)
+SHORT_SERVICE_NAME=$(ls /app)
+# HOST is the service running host
+HOST=${HOST:-$host}
+# HOST is the service listening port
+PORT=${PORT:-1701}
+# ENV is current environment
+ENV=${ENV:-production}
+
+cd /app/$SHORT_SERVICE_NAME
+echo "Service ${SHORT_SERVICE_NAME} is starting at ${HOST}:${PORT} in env ${ENV}"
+exec ./${SHORT_SERVICE_NAME} --env=${ENV} --port=${PORT} --host=${HOST}

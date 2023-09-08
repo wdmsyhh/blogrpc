@@ -30,3 +30,10 @@
   set key1 value1
   ```
   
+## test
+
+```shell
+docker run -it --rm -p 9091:9091 --network my_default registry.ap-southeast-1.aliyuncs.com/yhhnamespace/blogrpc-openapi-business:local
+
+docker run -it --rm -p 1701:1701 --name blogrpc-hello --network my_default registry.ap-southeast-1.aliyuncs.com/yhhnamespace/blogrpc-hello:local
+```

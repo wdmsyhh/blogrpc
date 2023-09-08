@@ -79,6 +79,9 @@ github.com/gomodule/redigo/redis
 # github.com/gorilla/schema v1.2.0
 ## explicit
 github.com/gorilla/schema
+# github.com/gorilla/websocket v1.5.0
+## explicit; go 1.12
+github.com/gorilla/websocket
 # github.com/grpc-ecosystem/grpc-gateway v1.16.0
 ## explicit; go 1.14
 github.com/grpc-ecosystem/grpc-gateway/internal
@@ -481,10 +484,6 @@ google.golang.org/protobuf/types/known/wrapperspb
 # gopkg.in/ini.v1 v1.67.0
 ## explicit
 gopkg.in/ini.v1
-# gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
-## explicit
-gopkg.in/mgo.v2/bson
-gopkg.in/mgo.v2/internal/json
 # gopkg.in/tylerb/graceful.v1 v1.2.15
 ## explicit
 gopkg.in/tylerb/graceful.v1
