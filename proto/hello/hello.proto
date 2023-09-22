@@ -8,4 +8,5 @@ message StringMessage {
   // @required
   string value = 1; // custom_tag1:"custom_value1" custom_tag2:"custom_value2"
   string value2 = 2;
+  string hostname = 3;
 }

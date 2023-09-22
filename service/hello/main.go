@@ -1,6 +1,7 @@
 package main
 
 import (
+	"blogrpc/core/constant"
 	"blogrpc/proto/hello"
 	"blogrpc/service/hello/service"
 	"google.golang.org/grpc"
@@ -12,7 +13,7 @@ func main() {
 	log.SetFlags(log.Lshortfile)
 	//go StartGRPCGateway()
 
-	lis, err := net.Listen("tcp", ":1701")
+	lis, err := net.Listen("tcp", ":"+constant.SERVICE_HELLO_PORT)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

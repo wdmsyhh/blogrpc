@@ -39,9 +39,13 @@ func Auth(c *gin.Context) {
 
 	appId := cast.ToString(claims["appId"])
 	appSecret := cast.ToString(claims["appSecret"])
+	aid := cast.ToString(claims["aid"])
 
+	c.Request.Header.Set("Aid", aid)
 	c.Request.Header.Set("App-Id", appId)
 	c.Request.Header.Set("App-Secret", appSecret)
+
+	c.Request.Header.Set("Test-Header", aid)
 
 	c.Next()
 }

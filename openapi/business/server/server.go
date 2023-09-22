@@ -46,6 +46,10 @@ func NewApiServer(ip, port, version, env string) *ApiServer {
 	}
 }
 
+func NewServeMux() http.Handler {
+	return newServeMux()
+}
+
 func newServeMux() http.Handler {
 	ctx := context.Background()
 	log.Println("Register blogrpc service")

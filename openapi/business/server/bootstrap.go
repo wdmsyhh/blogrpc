@@ -22,6 +22,7 @@ func Bootstrap(server *ApiServer) error {
 
 	// Load extensions for openapi
 	extensions := []string{"request", "mgo", "redis"}
+	//extensions := []string{"request", "mgo"}
 	extension.LoadExtensionsByName(extensions, server.DebugMode())
 
 	// Init and load system wide middlewares

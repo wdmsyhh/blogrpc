@@ -1,14 +1,27 @@
 package main
 
 import (
+	"blogrpc/core/constant"
+	"blogrpc/core/extension"
 	"blogrpc/proto/member"
 	"blogrpc/service/member/service"
+	flag "github.com/spf13/pflag"
+	conf "github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	"os"
 	"os/signal"
 	"syscall"
+)
+
+const (
+	Local = "local"
+)
+
+var (
+	env = flag.String("env", Local, "the running environment")
 )
 
 func main() {
@@ -16,10 +29,15 @@ func main() {
 
 	signal.Ignore(syscall.SIGHUP)
 
-	lis, err := net.Listen("tcp", ":1701")
+	lis, err := net.Listen("tcp", ":"+constant.SERVICE_MEMBER_PORT)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
+	// 本地调试的时候使用
+	setEnv()
+
+	extension.LoadExtensionsByName([]string{"mgo"}, *env == Local)
 
 	server := grpc.NewServer()
 	member.RegisterMemberServiceServer(server, &service.MemberService{})
@@ -28,4 +46,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func setEnv() {
+	conf.Set("logger-level", "debug")
+	os.Setenv("MONGO_MASTER_DSN", "mongodb://root:root@localhost:27012/portal-master?authSource=admin")
+	os.Setenv("MONGO_MASTER_REPLSET", "none")
 }
