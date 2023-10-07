@@ -3,6 +3,7 @@ package main
 import (
 	"blogrpc/core/constant"
 	"blogrpc/core/extension"
+	"blogrpc/core/util"
 	"blogrpc/proto/member"
 	"blogrpc/service/member/service"
 	flag "github.com/spf13/pflag"
@@ -34,8 +35,14 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	// 本地调试的时候使用
-	setEnv()
+	if util.IsRunningInContainer() {
+		log.Println("====IsRunningInContainer===")
+		log.Println(os.Getenv("MONGO_MASTER_DSN"))
+		log.Println(os.Getenv("MONGO_MASTER_REPLSET"))
+	} else {
+		// 本地调试的时候使用
+		setEnv()
+	}
 
 	extension.LoadExtensionsByName([]string{"mgo"}, *env == Local)
 

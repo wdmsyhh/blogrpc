@@ -1,7 +1,9 @@
 package main
 
 import (
+	"blogrpc/core/util"
 	"blogrpc/openapi/business/controller"
+	"blogrpc/openapi/business/middleware"
 	"blogrpc/openapi/business/server"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -9,7 +11,6 @@ import (
 	conf "github.com/spf13/viper"
 	"gopkg.in/tylerb/graceful.v1"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"time"
@@ -56,7 +57,7 @@ func main() {
 		hostname, _ := os.Hostname()
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"hostname": hostname,
-			"ip":       getIp(),
+			"ip":       util.GetIp(),
 		})
 	})
 	engin.GET("/health", func(c *gin.Context) {
@@ -69,6 +70,7 @@ func main() {
 	engin.GET("/accessToken", controller.AccessTokenHandler)
 
 	engin.Use(controller.Auth)
+	engin.Use(middleware.ResponseWriterMiddleware{}.MiddlewareFunc())
 
 	engin.Any("/v1/*rest", func(c *gin.Context) {
 		mux.ServeHTTP(c.Writer, c.Request)
@@ -106,26 +108,4 @@ func loadConfig() {
 	conf.Set("addr", fmt.Sprintf("%s:%s", *host, *port))
 	conf.Set("service", "openapi")
 	log.Printf("Configuration loaded from: %s", conf.ConfigFileUsed())
-}
-
-func getIp() string {
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	for _, iface := range ifaces {
-		addrs, err := iface.Addrs()
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		for _, addr := range addrs {
-			ipnet, ok := addr.(*net.IPNet)
-			if ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil && ipnet.IP.IsGlobalUnicast() {
-				return ipnet.IP.String()
-			}
-		}
-	}
-	return ""
 }

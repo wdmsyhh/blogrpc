@@ -29,7 +29,7 @@
     show collections;
     # 切换数据库
     use portal-master;
-    # 添加一条数据
+    # 添加一条数据,如果是容器内部需要使用别名加内部端口
     db.accountDBConfig.insert(
         {
         "title" : "",

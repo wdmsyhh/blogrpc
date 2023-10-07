@@ -1,6 +1,7 @@
 package service
 
 import (
+	"blogrpc/core/util"
 	"blogrpc/proto/hello"
 	"context"
 	"fmt"
@@ -17,8 +18,8 @@ func (HelloService) SayHello(ctx context.Context, req *hello.StringMessage) (*he
 
 	hostname, _ := os.Hostname()
 	resp := &hello.StringMessage{
-		Value:    req.Value,
-		Hostname: hostname,
+		Value:   req.Value,
+		Service: "hello-" + hostname + "-" + util.GetIp(),
 	}
 
 	return resp, nil

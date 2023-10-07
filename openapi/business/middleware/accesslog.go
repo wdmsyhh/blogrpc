@@ -5,14 +5,12 @@ import (
 	core_util "blogrpc/core/util"
 	"bytes"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"strings"
-
-	"github.com/spf13/cast"
-
-	"github.com/gin-gonic/gin"
 )
 
 type AccessLogJsonMiddleware struct {

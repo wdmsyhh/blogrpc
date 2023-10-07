@@ -1,19 +1,13 @@
 package middleware
 
 import (
+	"blogrpc/core/util"
 	"bytes"
 	"encoding/json"
-	"net/http"
-	"regexp"
-
-	"blogrpc/core/log"
-
 	"github.com/gin-gonic/gin"
-)
-
-var (
-	// 保存数据权限验证未通过的接口，不能直接返回 403 需要处理正常返回空值
-	responseMapFor403Routers = map[string]interface{}{}
+	"github.com/spf13/cast"
+	"net/http"
+	"os"
 )
 
 type ResponseWriterMiddleware struct {
@@ -31,30 +25,17 @@ func (ResponseWriterMiddleware) MiddlewareFunc() gin.HandlerFunc {
 		c.Writer = rw
 		c.Next()
 		statusCode := c.Writer.Status()
-		if statusCode >= 500 || log.IsRecordResponseBody(c) {
-			c.Keys["responseBody"] = rw.ResponseBody.String()
-		} else if statusCode == 403 {
-			// 处理数据权限返回 403 状态，但需要正常响应空值的接口
-			for r, resp := range responseMapFor403Routers {
-				if !isMatched(r, c.Request.URL.Path) {
-					continue
-				}
-				rw.ResponseBody.Reset()
-				b, _ := json.Marshal(resp)
-				rw.ResponseBody.Write(b)
-				c.Status(http.StatusOK)
-				break
+		if statusCode == http.StatusOK {
+			body := map[string]interface{}{}
+			json.Unmarshal(rw.ResponseBody.Bytes(), &body)
+			hostname, _ := os.Hostname()
+			if v, ok := body["service"]; ok {
+				body["service"] = "openapi-business-" + hostname + "-" + util.GetIp() + ";" + cast.ToString(v)
 			}
+			data, _ := json.Marshal(body)
+			rw.ResponseWriter.Write(data)
+		} else {
+			rw.ResponseWriter.Write(rw.ResponseBody.Bytes())
 		}
-		rw.ResponseWriter.Write(rw.ResponseBody.Bytes())
 	}
-}
-
-func isMatched(pattern, s string) bool {
-	isMatched, err := regexp.MatchString(pattern, s)
-	if err != nil {
-		panic(err)
-	}
-
-	return isMatched
 }

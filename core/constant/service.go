@@ -1,6 +1,7 @@
 package constant
 
 const (
+	// for in docker test
 	SERVICE_HELLO_PORT  = "1701"
 	SERVICE_MEMBER_PORT = "1701"
 

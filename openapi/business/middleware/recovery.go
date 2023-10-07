@@ -1,17 +1,15 @@
 package middleware
 
 import (
+	"blogrpc/core/log"
 	"bytes"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
-
-	"blogrpc/core/log"
-
-	"github.com/gin-gonic/gin"
 )
 
 var (

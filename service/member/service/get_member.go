@@ -2,6 +2,7 @@ package service
 
 import (
 	"blogrpc/core/client"
+	"blogrpc/core/util"
 	"blogrpc/proto/hello"
 	"blogrpc/proto/member"
 	"blogrpc/service/member/model"
@@ -17,10 +18,10 @@ func (MemberService) GetMember(ctx context.Context, req *member.GetMemberRequest
 	hostname, _ := os.Hostname()
 	if req.Id == "aaa" {
 		resp = &member.GetMemberResponse{
-			Id:       "aaa",
-			Name:     "小明",
-			Age:      20,
-			Hostname: hostname,
+			Id:      "aaa",
+			Name:    "小明",
+			Age:     20,
+			Service: "member-" + hostname + "-" + util.GetIp(),
 		}
 		return resp, nil
 	}
@@ -28,6 +29,16 @@ func (MemberService) GetMember(ctx context.Context, req *member.GetMemberRequest
 	helloResp, err := client.GetHelloServiceClient().SayHello(ctx, &hello.StringMessage{Value: "Hello a"})
 	if err != nil {
 		return nil, err
+	}
+
+	if req.Id == "bbb" {
+		resp = &member.GetMemberResponse{
+			Id:      "aaa",
+			Name:    "小明",
+			Age:     20,
+			Service: "member-" + hostname + "-" + util.GetIp() + ";" + helloResp.Service,
+		}
+		return resp, nil
 	}
 
 	id, err := primitive.ObjectIDFromHex(req.Id)
@@ -42,7 +53,7 @@ func (MemberService) GetMember(ctx context.Context, req *member.GetMemberRequest
 	resp.Name = helloResp.Value + dbMember.Name
 	resp.Age = dbMember.Age
 	resp.Id = dbMember.Id.Hex()
-	resp.Hostname = hostname
+	resp.Service = "member-" + hostname + "-" + util.GetIp() + ";" + helloResp.Service
 	//resp.Name = helloResp.Value
 
 	return resp, nil

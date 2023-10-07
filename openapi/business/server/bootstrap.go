@@ -10,10 +10,6 @@ import (
 	"blogrpc/openapi/business/controller"
 	"blogrpc/openapi/business/middleware"
 	"blogrpc/openapi/business/router"
-	"blogrpc/openapi/business/util"
-
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/spf13/cast"
 	conf "github.com/spf13/viper"
 )
 
@@ -30,8 +26,6 @@ func Bootstrap(server *ApiServer) error {
 
 	// Load all middlewares
 	loadEnabledMiddlewares(server)
-
-	loadAuthMiddleware(server)
 
 	responseWriterMiddleware := &middleware.ResponseWriterMiddleware{}
 	server.Engine.Use(responseWriterMiddleware.MiddlewareFunc())
@@ -98,39 +92,6 @@ func initDefaultMiddlewares(server *ApiServer) {
 	server.Engine.Use(accessLogJsonMiddleware.MiddlewareFunc())
 }
 
-func loadAuthMiddleware(server *ApiServer) {
-	am := &middleware.AuthMiddleware{
-		Version: server.Version,
-		Env:     server.Env,
-		LookupFunc: func(t *jwt.Token) (interface{}, error) {
-			var (
-				accountId  string
-				secret     string
-				err        error
-				value      interface{}
-				isOldToken bool
-				claims     = t.Claims.(jwt.MapClaims)
-			)
-
-			// uid only exists in old accessToken's payload(aka Claims)
-			if value, isOldToken = claims["uid"]; !isOldToken {
-				value = claims["aid"]
-			}
-			accountId = cast.ToString(value)
-
-			secret, err = getSecret(accountId)
-			if err != nil {
-				return nil, err
-			}
-
-			return []byte(secret), nil
-		},
-		SkipReferrerValidator: server.DebugMode() || server.DevMode(),
-	}
-
-	server.Engine.Use(am.Auth())
-}
-
 func loadEnabledMiddlewares(server *ApiServer) {
 	ms := middleware.GetMiddlewares()
 	configedM := []string{
@@ -156,18 +117,4 @@ func loadEnabledMiddlewares(server *ApiServer) {
 			}
 		}
 	}
-}
-
-func getSecret(accountId string) (string, error) {
-	var (
-		key    = util.SECRET_HASH_PREFIX + accountId
-		secret string
-	)
-
-	secret, err := extension.RedisClient.Get(key)
-	if err != nil {
-		return "", err
-	}
-
-	return secret, nil
 }
