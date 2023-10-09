@@ -7,6 +7,7 @@ import (
 	"blogrpc/core/util"
 	"errors"
 	"fmt"
+	log2 "log"
 	"runtime"
 	"strconv"
 	"strings"
@@ -373,6 +374,8 @@ func ParseURL(url string) (*qmgo.Config, *options.ClientOptions, error) {
 		return nil, nil, err
 	}
 
+	log2.Println("========dbUrlInfo=======", info)
+
 	config := &qmgo.Config{
 		Uri:      info.uri,
 		Database: info.db,
@@ -450,6 +453,8 @@ func ParseURL(url string) (*qmgo.Config, *options.ClientOptions, error) {
 	})
 	opts.SetReadPreference(preference)
 
+	log2.Println("========dbConfig=======", config)
+
 	return config, opts, nil
 }
 
@@ -462,7 +467,12 @@ func extractURL(s string) (*urlInfo, error) {
 			if len(l) != 2 || l[0] == "" || l[1] == "" {
 				return nil, errors.New("connection option must be key=value: " + pair)
 			}
-			opts = append(opts, urlInfoOption{key: l[0], value: l[1]})
+			key := l[0]
+			value := l[1]
+			if key == "authSource" {
+				value = strings.Split(value, "?")[0]
+			}
+			opts = append(opts, urlInfoOption{key: key, value: value})
 		}
 		s = s[:c]
 	}

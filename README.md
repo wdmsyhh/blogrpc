@@ -63,3 +63,7 @@ docker run -it --rm -p 1701:1701 --name blogrpc-hello --network my_default regis
 - server selection timeout
 
 需要查看数据库 host 和端口是否正确
+
+- unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+
+查看业务服务日志和 mongodb 日志
