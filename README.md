@@ -41,6 +41,18 @@
         "createdAt" : ISODate("2023-06-07T08:14:11.583Z")
         }
     )
+    ###
+    db.accountDBConfig.insert(
+        {
+        "title" : "",
+        "accountId" : ObjectId("5e7873c4c3307000f272c9e2"),
+        "dsn" : "mongodb://root:root@mongo-mongodb-0.mongo-mongodb-headless.default.svc.cluster.local,mongo-mongodb-1.mongo-mongodb-headless.default.svc.cluster.local/portal-tenants-shared?authSource=admin",
+        "options" : {
+            "replicaSet" : "rs0"
+        },
+        "createdAt" : ISODate("2023-06-07T08:14:11.583Z")
+        }
+    )
   
     # 启动 Redis 容器
     docker pull redis:latest

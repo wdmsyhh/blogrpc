@@ -19,7 +19,7 @@ metadata:
   # 部署名字
   name: openapi-business
 spec:
-  replicas: 4
+  replicas: 2
   # 用来查找关联的 Pod，所有标签都匹配才行
   selector:
     matchLabels:
