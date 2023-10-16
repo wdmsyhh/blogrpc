@@ -2,11 +2,11 @@ package extension
 
 import (
 	rpc_errors "blogrpc/core/errors"
-	"blogrpc/core/extension/bson"
 	"blogrpc/core/log"
 	"blogrpc/core/util"
 	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	log2 "log"
 	"runtime"
 	"strconv"
@@ -196,10 +196,11 @@ func (tenant *tenantDBConnector) updateBadHosts() {
 }
 
 func (tenant *tenantDBConnector) refreshAllHosts(ctx context.Context) {
-	var accountIds []bson.ObjectId
+	var accountIds []primitive.ObjectID
 	tenant.lock.Lock()
 	tenant.hosts.Range(func(k, v interface{}) bool {
-		accountIds = append(accountIds, bson.ObjectIdHex(k.(string)))
+		aid, _ := primitive.ObjectIDFromHex(k.(string))
+		accountIds = append(accountIds, aid)
 		return true
 	})
 	tenant.lock.Unlock()
@@ -248,7 +249,7 @@ func (tenant *tenantDBConnector) GetHost(ctx context.Context, accountId string) 
 
 	// the logic here is for the first concurrency request to get host in db
 	accountDBConfig := CAccountDBConfig.Get(ctx, accountId)
-	if !accountDBConfig.Id.Valid() {
+	if accountDBConfig.Id.IsZero() {
 		msg := fmt.Sprintf("Account: %s no configuration of hosts", accountId)
 		log.Warn(ctx, msg, nil)
 		panic(msg)
@@ -355,8 +356,6 @@ func dialClient(ctx context.Context, hosts string) (*qmgo.QmgoClient, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	diaOptions.Registry = bson.DefaultRegistry
 
 	qmoClient, err := qmgo.Open(ctx, dialConfig, qmgo_options.ClientOptions{
 		ClientOptions: diaOptions,

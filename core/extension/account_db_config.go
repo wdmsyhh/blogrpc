@@ -1,8 +1,8 @@
 package extension
 
 import (
-	"blogrpc/core/extension/bson"
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -14,17 +14,18 @@ var (
 )
 
 type AccountDBConfig struct {
-	Id        bson.ObjectId          `bson:"_id"`
+	Id        primitive.ObjectID     `bson:"_id"`
 	Title     string                 `bson:"title"`
 	DSN       string                 `bson:"dsn"`
 	Options   map[string]interface{} `bson:"options"`
-	AccountId bson.ObjectId          `bson:"accountId"`
+	AccountId primitive.ObjectID     `bson:"accountId"`
 }
 
 func (*AccountDBConfig) Get(ctx context.Context, accountId string) *AccountDBConfig {
 	db := new(AccountDBConfig)
-	selector := bson.M{
-		"accountId": bson.ObjectIdHex(accountId),
+	aid, _ := primitive.ObjectIDFromHex(accountId)
+	selector := primitive.M{
+		"accountId": aid,
 	}
 	DBRepository.FindOne(ctx, C_ACCOUNT_DB_CONFIG, selector, db)
 
@@ -38,10 +39,10 @@ func (*AccountDBConfig) GetAll(ctx context.Context) []AccountDBConfig {
 	return dbs
 }
 
-func (*AccountDBConfig) GetByAccountIds(ctx context.Context, accountIds []bson.ObjectId) []AccountDBConfig {
+func (*AccountDBConfig) GetByAccountIds(ctx context.Context, accountIds []primitive.ObjectID) []AccountDBConfig {
 	var dbs []AccountDBConfig
-	selector := bson.M{
-		"accountId": bson.M{"$in": accountIds},
+	selector := primitive.M{
+		"accountId": primitive.M{"$in": accountIds},
 	}
 
 	DBRepository.FindAll(ctx, C_ACCOUNT_DB_CONFIG, selector, []string{}, 0, &dbs)

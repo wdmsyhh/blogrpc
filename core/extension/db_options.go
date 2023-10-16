@@ -1,7 +1,7 @@
 package extension
 
 import (
-	"blogrpc/core/extension/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/qiniu/qmgo"
 )
@@ -11,7 +11,7 @@ const (
 )
 
 type IterateOption struct {
-	Fields    bson.M
+	Fields    primitive.M
 	BatchSize int64
 	Sortor    []string
 }

@@ -25,3 +25,9 @@ message CreateMemberRequest {
   string name = 1; // valid:"required,objectId"
   int64 age = 2;
 }
+
+message CreateMemberResponse {
+  string id = 1;
+  string name = 2;
+  int64 age = 3;
+}

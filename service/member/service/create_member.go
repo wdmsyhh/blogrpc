@@ -1,14 +1,13 @@
 package service
 
 import (
-	"blogrpc/proto/common/response"
-	"blogrpc/proto/member"
+	pb_member "blogrpc/proto/member"
 	"blogrpc/service/member/model"
 	"context"
 	"github.com/qiniu/qmgo"
 )
 
-func (MemberService) CreateMember(ctx context.Context, req *member.CreateMemberRequest) (*response.EmptyResponse, error) {
+func (MemberService) CreateMember(ctx context.Context, req *pb_member.CreateMemberRequest) (*pb_member.CreateMemberResponse, error) {
 
 	member := &model.Member{
 		Id:   qmgo.NewObjectID(),
@@ -16,10 +15,14 @@ func (MemberService) CreateMember(ctx context.Context, req *member.CreateMemberR
 		Age:  req.Age,
 	}
 
-	err := member.Create(ctx)
+	id, err := member.Create(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &response.EmptyResponse{}, nil
+	return &pb_member.CreateMemberResponse{
+		Id:   id.Hex(),
+		Name: member.Name,
+		Age:  member.Age,
+	}, nil
 }

@@ -4,10 +4,9 @@ import (
 	"blogrpc/core/util"
 	"encoding/json"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strconv"
 	"time"
-
-	"blogrpc/core/extension/bson"
 
 	"github.com/gomodule/redigo/redis"
 	log "github.com/sirupsen/logrus"
@@ -475,7 +474,7 @@ func (client *RedisManager) EnqueueWithName(className string, args interface{}, 
 	conn.Send("SADD", "wmresque:queues", queueName)
 
 	queue := fmt.Sprintf("wmresque:queue:%s", queueName)
-	jobId := bson.NewObjectId().Hex()
+	jobId := primitive.NewObjectID().Hex()
 	queueInfo := &job{Class: className, Args: args, Id: jobId}
 	jobInfo, _ := json.Marshal(queueInfo)
 	conn.Send("RPUSH", queue, jobInfo)

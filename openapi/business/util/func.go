@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"github.com/globalsign/mgo/bson"
 	"io"
 	"math"
 	"math/rand"
@@ -21,8 +22,6 @@ import (
 	blogrpc_error "blogrpc/core/errors"
 	blogrpc_util "blogrpc/core/util"
 	blogrpc_types "blogrpc/proto/common/types"
-
-	"blogrpc/core/extension/bson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"

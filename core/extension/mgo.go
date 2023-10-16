@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
 	"runtime"
 	"strings"
@@ -18,8 +19,6 @@ import (
 
 	"blogrpc/core/log"
 	"blogrpc/core/util"
-
-	"blogrpc/core/extension/bson"
 
 	"github.com/qiniu/qmgo"
 )
@@ -138,38 +137,38 @@ func (*directClientRemover) Remove(ctx context.Context, collectionName string) {
 }
 
 type DatabaseRepository interface {
-	FindOne(ctx context.Context, collectionName string, selector bson.M, result interface{}) error
-	FindOneWithSortor(ctx context.Context, collectionName string, selector bson.M, sortor []string, result interface{}) error
-	FindAll(ctx context.Context, collectionName string, selector bson.M, sortor []string, limit int, result interface{}) error
-	FindAllWithFields(ctx context.Context, collectionName string, selector, fields bson.M, sortor []string, limit int, result interface{}) error
+	FindOne(ctx context.Context, collectionName string, selector primitive.M, result interface{}) error
+	FindOneWithSortor(ctx context.Context, collectionName string, selector primitive.M, sortor []string, result interface{}) error
+	FindAll(ctx context.Context, collectionName string, selector primitive.M, sortor []string, limit int, result interface{}) error
+	FindAllWithFields(ctx context.Context, collectionName string, selector, fields primitive.M, sortor []string, limit int, result interface{}) error
 	FindByPK(ctx context.Context, collectionName string, id interface{}, result interface{}) error
 	FindByPagination(ctx context.Context, collectionName string, page PagingCondition, result interface{}) (int, error)
 	FindByPaginationWithoutCount(ctx context.Context, collectionName string, page PagingCondition, result interface{}) error
-	FindByPaginationWithFields(ctx context.Context, collectionName string, page PagingCondition, result interface{}, fields bson.M) (int, error)
-	FindAndApply(ctx context.Context, collectionName string, selector bson.M, sort []string, change qmgo.Change, result interface{}) error
-	UpdateOne(ctx context.Context, collectionName string, selector bson.M, updator bson.M) error
-	UpdateAll(ctx context.Context, collectionName string, selector bson.M, updator bson.M) (int, error)
-	UpdateAllWithAggregation(ctx context.Context, collectionName string, selector bson.M, pipeline []bson.M) (int, error)
-	Insert(ctx context.Context, collectionName string, docs ...interface{}) ([]bson.ObjectId, error)
-	RemoveOne(ctx context.Context, collectionName string, selector bson.M) error
-	RemoveAll(ctx context.Context, collectionName string, selector bson.M) (int, error)
-	Count(ctx context.Context, collectionName string, selector bson.M) (int, error)
+	FindByPaginationWithFields(ctx context.Context, collectionName string, page PagingCondition, result interface{}, fields primitive.M) (int, error)
+	FindAndApply(ctx context.Context, collectionName string, selector primitive.M, sort []string, change qmgo.Change, result interface{}) error
+	UpdateOne(ctx context.Context, collectionName string, selector primitive.M, updator primitive.M) error
+	UpdateAll(ctx context.Context, collectionName string, selector primitive.M, updator primitive.M) (int, error)
+	UpdateAllWithAggregation(ctx context.Context, collectionName string, selector primitive.M, pipeline []primitive.M) (int, error)
+	Insert(ctx context.Context, collectionName string, docs ...interface{}) ([]primitive.ObjectID, error)
+	RemoveOne(ctx context.Context, collectionName string, selector primitive.M) error
+	RemoveAll(ctx context.Context, collectionName string, selector primitive.M) (int, error)
+	Count(ctx context.Context, collectionName string, selector primitive.M) (int, error)
 	Aggregate(ctx context.Context, collectionName string, pipeline interface{}, one bool, result interface{}) error
-	Distinct(ctx context.Context, collectionName string, selector bson.M, key string, result interface{}) error
-	Upsert(ctx context.Context, collectionName string, selector bson.M, updator bson.M) (interface{}, error)
+	Distinct(ctx context.Context, collectionName string, selector primitive.M, key string, result interface{}) error
+	Upsert(ctx context.Context, collectionName string, selector primitive.M, updator primitive.M) (interface{}, error)
 	InsertUnordered(ctx context.Context, collectionName string, docs ...interface{}) (*mongo.BulkWriteResult, *mongo.BulkWriteException)
 	BatchUpsert(ctx context.Context, collectionName string, docs ...interface{}) (*mongo.BulkWriteResult, *mongo.BulkWriteException)
 	BatchUpdate(ctx context.Context, collectionName string, docs ...interface{}) (*mongo.BulkWriteResult, *mongo.BulkWriteException)
 	BatchUpdateUnordered(ctx context.Context, collectionName string, docs ...interface{}) (*mongo.BulkWriteResult, *mongo.BulkWriteException)
-	Iterate(ctx context.Context, collectionName string, selector bson.M, sortor []string) (IterWrapper, error)
-	IterateWithOption(ctx context.Context, collectionName string, selector bson.M, opt IterateOption) (IterWrapper, error)
-	FindAllWithHint(ctx context.Context, collectionName string, selector bson.M, sortor []string, limit int, hint string, result interface{}) error
+	Iterate(ctx context.Context, collectionName string, selector primitive.M, sortor []string) (IterWrapper, error)
+	IterateWithOption(ctx context.Context, collectionName string, selector primitive.M, opt IterateOption) (IterWrapper, error)
+	FindAllWithHint(ctx context.Context, collectionName string, selector primitive.M, sortor []string, limit int, hint string, result interface{}) error
 	Transaction(ctx context.Context, transactionFunc func(sessCtx context.Context) (interface{}, error), opts ...*TransactionOption) (interface{}, error)
 	CreateCollection(ctx context.Context, name string) error
 }
 
 type PagingCondition struct {
-	Selector  bson.M
+	Selector  primitive.M
 	PageIndex int
 	PageSize  int
 	Sortor    []string
@@ -180,7 +179,7 @@ type mongoDBRepository struct {
 	clientRemover  ClientRemover
 }
 
-func (repo *mongoDBRepository) FindOne(ctx context.Context, collectionName string, selector bson.M, result interface{}) error {
+func (repo *mongoDBRepository) FindOne(ctx context.Context, collectionName string, selector primitive.M, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongoFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
@@ -201,7 +200,7 @@ func (repo *mongoDBRepository) FindOne(ctx context.Context, collectionName strin
 	return handleDatabaseError(ctx, err, "FindOne", collectionName, selector)
 }
 
-func (repo *mongoDBRepository) FindOneWithSortor(ctx context.Context, collectionName string, selector bson.M, sortor []string, result interface{}) error {
+func (repo *mongoDBRepository) FindOneWithSortor(ctx context.Context, collectionName string, selector primitive.M, sortor []string, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
@@ -222,7 +221,7 @@ func (repo *mongoDBRepository) FindOneWithSortor(ctx context.Context, collection
 	return handleDatabaseError(ctx, err, "FindOneWithSortor", collectionName, selector)
 }
 
-func (repo *mongoDBRepository) FindAllWithFields(ctx context.Context, collectionName string, selector, fields bson.M, sortor []string, limit int, result interface{}) error {
+func (repo *mongoDBRepository) FindAllWithFields(ctx context.Context, collectionName string, selector, fields primitive.M, sortor []string, limit int, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		formatSelectorIn(ctx, selector)
@@ -253,7 +252,7 @@ func (repo *mongoDBRepository) FindAllWithFields(ctx context.Context, collection
 	return handleDatabaseError(ctx, err, "FindAllWithFields", collectionName, selector, sortor, limit)
 }
 
-func (repo *mongoDBRepository) FindAll(ctx context.Context, collectionName string, selector bson.M, sortor []string, limit int, result interface{}) error {
+func (repo *mongoDBRepository) FindAll(ctx context.Context, collectionName string, selector primitive.M, sortor []string, limit int, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		formatSelectorIn(ctx, selector)
@@ -287,7 +286,7 @@ func (repo *mongoDBRepository) FindByPK(ctx context.Context, collectionName stri
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
-		q := collection.Find(ctx, bson.M{"_id": id})
+		q := collection.Find(ctx, primitive.M{"_id": id})
 		err := q.One(result)
 		repo.logProfile(ctx, "FindByPK", startTime, map[string]interface{}{
 			"collectionName": collectionName,
@@ -301,7 +300,7 @@ func (repo *mongoDBRepository) FindByPK(ctx context.Context, collectionName stri
 	return handleDatabaseError(ctx, err, "FindByPK", collectionName, id)
 }
 
-func (repo *mongoDBRepository) FindByPaginationWithFields(ctx context.Context, collectionName string, page PagingCondition, result interface{}, fields bson.M) (int, error) {
+func (repo *mongoDBRepository) FindByPaginationWithFields(ctx context.Context, collectionName string, page PagingCondition, result interface{}, fields primitive.M) (int, error) {
 	ctx = util.DuplicateContext(ctx)
 	var total int
 	runMongodbFunc := func(collection *qmgo.Collection) error {
@@ -395,7 +394,7 @@ func queryPage(ctx context.Context, collection *qmgo.Collection, page PagingCond
 	return skipCount, q.All(result)
 }
 
-func queryPageWhitFileds(ctx context.Context, collection *qmgo.Collection, page PagingCondition, result interface{}, fields bson.M) (int, error) {
+func queryPageWhitFileds(ctx context.Context, collection *qmgo.Collection, page PagingCondition, result interface{}, fields primitive.M) (int, error) {
 	var q qmgo.QueryI
 	if fields != nil {
 		q = collection.Find(ctx, page.Selector).Select(fields)
@@ -411,7 +410,7 @@ func queryPageWhitFileds(ctx context.Context, collection *qmgo.Collection, page 
 	return skipCount, q.All(result)
 }
 
-func (repo *mongoDBRepository) FindAndApply(ctx context.Context, collectionName string, selector bson.M, sort []string, change qmgo.Change, result interface{}) error {
+func (repo *mongoDBRepository) FindAndApply(ctx context.Context, collectionName string, selector primitive.M, sort []string, change qmgo.Change, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) (err error) {
 		startTime := time.Now()
@@ -435,7 +434,7 @@ func (repo *mongoDBRepository) FindAndApply(ctx context.Context, collectionName 
 	return handleDatabaseError(ctx, err, "FindAndApply", collectionName, selector)
 }
 
-func (repo *mongoDBRepository) UpdateOne(ctx context.Context, collectionName string, selector bson.M, updator bson.M) error {
+func (repo *mongoDBRepository) UpdateOne(ctx context.Context, collectionName string, selector primitive.M, updator primitive.M) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
@@ -455,7 +454,7 @@ func (repo *mongoDBRepository) UpdateOne(ctx context.Context, collectionName str
 	return handleDatabaseError(ctx, err, "UpdateOne", collectionName, selector, updator)
 }
 
-func (repo *mongoDBRepository) UpdateAll(ctx context.Context, collectionName string, selector bson.M, updator bson.M) (int, error) {
+func (repo *mongoDBRepository) UpdateAll(ctx context.Context, collectionName string, selector primitive.M, updator primitive.M) (int, error) {
 	ctx = util.DuplicateContext(ctx)
 	var info *qmgo.UpdateResult
 	runMongodbFunc := func(collection *qmgo.Collection) (err error) {
@@ -480,7 +479,7 @@ func (repo *mongoDBRepository) UpdateAll(ctx context.Context, collectionName str
 	return int(info.ModifiedCount), nil
 }
 
-func (repo *mongoDBRepository) UpdateAllWithAggregation(ctx context.Context, collectionName string, selector bson.M, pipeline []bson.M) (int, error) {
+func (repo *mongoDBRepository) UpdateAllWithAggregation(ctx context.Context, collectionName string, selector primitive.M, pipeline []primitive.M) (int, error) {
 	ctx = util.DuplicateContext(ctx)
 	var info *qmgo.UpdateResult
 	runMongodbFunc := func(collection *qmgo.Collection) (err error) {
@@ -504,9 +503,9 @@ func (repo *mongoDBRepository) UpdateAllWithAggregation(ctx context.Context, col
 	return int(info.ModifiedCount), nil
 }
 
-func (repo *mongoDBRepository) Insert(ctx context.Context, collectionName string, docs ...interface{}) ([]bson.ObjectId, error) {
+func (repo *mongoDBRepository) Insert(ctx context.Context, collectionName string, docs ...interface{}) ([]primitive.ObjectID, error) {
 	ctx = util.DuplicateContext(ctx)
-	var ids []bson.ObjectId
+	var ids []primitive.ObjectID
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
 		var err error
@@ -526,7 +525,7 @@ func (repo *mongoDBRepository) Insert(ctx context.Context, collectionName string
 					}, stack)
 				}
 			}()
-			ids = append(ids, bson.GetInsertManyIds(res)...)
+			ids = append(ids, GetInsertManyIds(res)...)
 		} else {
 			var res *qmgo.InsertOneResult
 			res, err = collection.InsertOne(ctx, docs[0])
@@ -540,7 +539,8 @@ func (repo *mongoDBRepository) Insert(ctx context.Context, collectionName string
 						}, stack)
 					}
 				}()
-				ids = append(ids, bson.GetInsertOneId(res))
+				//ids2 = append(ids2, res.InsertedID.(primitive.ObjectID))
+				ids = append(ids, GetInsertOneId(res))
 			}
 		}
 		repo.logProfile(ctx, "Insert", startTime, map[string]interface{}{
@@ -556,7 +556,7 @@ func (repo *mongoDBRepository) Insert(ctx context.Context, collectionName string
 	return ids, handleDatabaseError(ctx, err, "Insert", collectionName, docs)
 }
 
-func (repo *mongoDBRepository) RemoveOne(ctx context.Context, collectionName string, selector bson.M) error {
+func (repo *mongoDBRepository) RemoveOne(ctx context.Context, collectionName string, selector primitive.M) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
@@ -575,7 +575,7 @@ func (repo *mongoDBRepository) RemoveOne(ctx context.Context, collectionName str
 	return handleDatabaseError(ctx, err, "RemoveOne", collectionName, selector)
 }
 
-func (repo *mongoDBRepository) RemoveAll(ctx context.Context, collectionName string, selector bson.M) (int, error) {
+func (repo *mongoDBRepository) RemoveAll(ctx context.Context, collectionName string, selector primitive.M) (int, error) {
 	ctx = util.DuplicateContext(ctx)
 	var info *qmgo.DeleteResult
 	runMongodbFunc := func(collection *qmgo.Collection) (err error) {
@@ -597,7 +597,7 @@ func (repo *mongoDBRepository) RemoveAll(ctx context.Context, collectionName str
 	return int(info.DeletedCount), nil
 }
 
-func (repo *mongoDBRepository) Count(ctx context.Context, collectionName string, selector bson.M) (int, error) {
+func (repo *mongoDBRepository) Count(ctx context.Context, collectionName string, selector primitive.M) (int, error) {
 	ctx = util.DuplicateContext(ctx)
 	var count int
 	runMongodbFunc := func(collection *qmgo.Collection) (err error) {
@@ -626,8 +626,8 @@ func (repo *mongoDBRepository) Aggregate(ctx context.Context, collectionName str
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) (err error) {
 		startTime := time.Now()
-		for i := range pipeline.([]bson.M) {
-			formatSelectorIn(ctx, (pipeline.([]bson.M))[i])
+		for i := range pipeline.([]primitive.M) {
+			formatSelectorIn(ctx, (pipeline.([]primitive.M))[i])
 		}
 		pipe := collection.Aggregate(ctx, pipeline)
 		if one {
@@ -649,7 +649,7 @@ func (repo *mongoDBRepository) Aggregate(ctx context.Context, collectionName str
 	return handleDatabaseError(ctx, err, "Aggregate", collectionName, pipeline, one)
 }
 
-func (repo *mongoDBRepository) Distinct(ctx context.Context, collectionName string, selector bson.M, key string, result interface{}) error {
+func (repo *mongoDBRepository) Distinct(ctx context.Context, collectionName string, selector primitive.M, key string, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		startTime := time.Now()
@@ -670,7 +670,7 @@ func (repo *mongoDBRepository) Distinct(ctx context.Context, collectionName stri
 	return handleDatabaseError(ctx, err, "Distinct", collectionName, selector, key)
 }
 
-func (repo *mongoDBRepository) Upsert(ctx context.Context, collectionName string, selector bson.M, updator bson.M) (interface{}, error) {
+func (repo *mongoDBRepository) Upsert(ctx context.Context, collectionName string, selector primitive.M, updator primitive.M) (interface{}, error) {
 	ctx = util.DuplicateContext(ctx)
 	var info *mongo.UpdateResult
 
@@ -884,14 +884,14 @@ func getBatchUpsertFunc(ctx context.Context, collectionName string, repo *mongoD
 
 type IterWrapper = qmgo.CursorI
 
-func (repo *mongoDBRepository) Iterate(ctx context.Context, collectionName string, selector bson.M, sortor []string) (IterWrapper, error) {
+func (repo *mongoDBRepository) Iterate(ctx context.Context, collectionName string, selector primitive.M, sortor []string) (IterWrapper, error) {
 	opt := IterateOption{
 		Sortor: sortor,
 	}
 	return repo.IterateWithOption(ctx, collectionName, selector, opt)
 }
 
-func (repo *mongoDBRepository) IterateWithOption(ctx context.Context, collectionName string, selector bson.M, opt IterateOption) (IterWrapper, error) {
+func (repo *mongoDBRepository) IterateWithOption(ctx context.Context, collectionName string, selector primitive.M, opt IterateOption) (IterWrapper, error) {
 	ctx = util.DuplicateContext(ctx)
 	startTime := time.Now()
 	formatSelectorIn(ctx, selector)
@@ -912,7 +912,7 @@ func (repo *mongoDBRepository) IterateWithOption(ctx context.Context, collection
 	return it, err
 }
 
-func (repo *mongoDBRepository) FindAllWithHint(ctx context.Context, collectionName string, selector bson.M, sortor []string, limit int, hint string, result interface{}) error {
+func (repo *mongoDBRepository) FindAllWithHint(ctx context.Context, collectionName string, selector primitive.M, sortor []string, limit int, hint string, result interface{}) error {
 	ctx = util.DuplicateContext(ctx)
 	runMongodbFunc := func(collection *qmgo.Collection) error {
 		formatSelectorIn(ctx, selector)
@@ -997,7 +997,7 @@ func (repo *mongoDBRepository) runMongodbRecursively(ctx context.Context, collec
 }
 
 func handleDatabaseError(ctx context.Context, err error, funcName string, args ...interface{}) error {
-	if err != nil && err != bson.ErrNotFound {
+	if err != nil && !errors.Is(err, ErrNotFound) {
 		logUnexpectedError(ctx, err, funcName, args)
 	}
 
@@ -1032,7 +1032,7 @@ func isServerUnreachable(err error) bool {
 }
 
 // 升级 golang driver 后，$in 未初始化的数组会报错。panic: (BadValue) $in needs an array。
-func formatSelectorIn(ctx context.Context, query bson.M) {
+func formatSelectorIn(ctx context.Context, query primitive.M) {
 	// 理论上不可能 panic，由于太底层，以防万一
 	defer func() {
 		if r := recover(); r != nil {
@@ -1057,18 +1057,37 @@ func formatSelectorIn(ctx context.Context, query bson.M) {
 			continue
 		}
 		if reflect.TypeOf(v).Kind() == reflect.Map {
-			formatSelectorIn(ctx, v.(bson.M))
+			formatSelectorIn(ctx, v.(primitive.M))
 			continue
 		}
 		if reflect.TypeOf(v).Kind() == reflect.Slice || reflect.TypeOf(v).Kind() == reflect.Array {
 			for i := 0; i < reflect.ValueOf(v).Len(); i++ {
 				vv := reflect.ValueOf(v).Index(i).Interface()
 				if reflect.TypeOf(vv).Kind() == reflect.Map {
-					formatSelectorIn(ctx, vv.(bson.M))
+					formatSelectorIn(ctx, vv.(primitive.M))
 					continue
 				}
 			}
 			continue
 		}
 	}
+}
+
+var ErrNotFound = qmgo.ErrNoSuchDocuments
+
+func GetInsertManyIds(result *qmgo.InsertManyResult) []primitive.ObjectID {
+	if result == nil {
+		return []primitive.ObjectID{}
+	}
+	ids := make([]primitive.ObjectID, len(result.InsertedIDs))
+	index := 0
+	for _, v := range result.InsertedIDs {
+		ids[index] = v.(primitive.ObjectID)
+		index++
+	}
+	return ids
+}
+
+func GetInsertOneId(result *qmgo.InsertOneResult) primitive.ObjectID {
+	return result.InsertedID.(primitive.ObjectID)
 }

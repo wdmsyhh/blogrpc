@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+const (
+	COOKIE_KEY = "r5jO-PYHr50S6EU88Rt9v70FiEwxXvAC"
+
+	RFC3339     = "2006-01-02T15:04:05Z07:00"
+	RFC3339Mili = "2006-01-02T15:04:05.999Z07:00"
+
+	MAX_INT64 int64 = 9223372036854775807
+	MAX_INT   int   = 4294967295
+)
+
 func StrInArray(search string, items *[]string) bool {
 	if items == nil {
 		return false

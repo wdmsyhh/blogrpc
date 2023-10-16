@@ -34,8 +34,11 @@ func (*Member) GetById(ctx context.Context, id primitive.ObjectID) (Member, erro
 	return result, err
 }
 
-func (m *Member) Create(ctx context.Context) error {
+func (m *Member) Create(ctx context.Context) (primitive.ObjectID, error) {
 	m.CreatedAt, m.UpdatedAt = time.Now(), time.Now()
-	_, err := extension.DBRepository.Insert(ctx, C_MEMBER, m)
-	return err
+	ids, err := extension.DBRepository.Insert(ctx, C_MEMBER, m)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return ids[0], nil
 }
