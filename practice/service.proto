@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package blogrpc.ken;
+package blogrpc.practice;
 
-option go_package = "ken";
+option go_package = "practice";
 
-import "ken/hello.proto";
+import "practice/hello.proto";
 
 service HelloService {
   rpc SayHello(StringMessage) returns (StringMessage);

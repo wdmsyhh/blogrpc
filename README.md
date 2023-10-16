@@ -1,6 +1,6 @@
 # blogrpc
 
-## grpc-gateway 和 gin 结合适用的 demo
+## grpc-gateway & grpc demo
 
 - 执行 `./proto/gen_stub.sh` proto 生成对应的 go 文件
   - 在 blogrpc 目录下执行 `./build.sh` 构建镜像

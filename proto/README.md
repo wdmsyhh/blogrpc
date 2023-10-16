@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package blogrpc.ken;
 
-option go_package = "ken";
+option go_package = "practice";
 
 message StringMessage {
   // @required
@@ -29,7 +29,7 @@ syntax = "proto3";
 
 package blogrpc.ken;
 
-option go_package = "ken";
+option go_package = "practice";
 
 import "ken/hello.proto";
 

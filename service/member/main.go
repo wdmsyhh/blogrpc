@@ -57,6 +57,9 @@ func main() {
 
 func setEnv() {
 	conf.Set("logger-level", "debug")
+
 	os.Setenv("MONGO_MASTER_DSN", "mongodb://root:root@localhost:27012/portal-master?authSource=admin")
 	os.Setenv("MONGO_MASTER_REPLSET", "rs0")
+
+	os.Setenv("MYSQL_MASTER_DSN", "root:root123@tcp(localhost:3306)/portal_master?charset=utf8mb4&parseTime=True&loc=Local")
 }

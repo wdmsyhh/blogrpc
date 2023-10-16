@@ -17,6 +17,10 @@ func GetMongoMasterReplset() string {
 	return os.Getenv("MONGO_MASTER_REPLSET")
 }
 
+func GetMysqlMasterDsn() string {
+	return os.Getenv("MYSQL_MASTER_DSN")
+}
+
 func GetCacheHost() string {
 	return os.Getenv("CACHE_HOST")
 }
