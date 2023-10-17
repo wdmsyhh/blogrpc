@@ -9,4 +9,6 @@ import "member/member.proto";
 service MemberService {
   rpc GetMember(GetMemberRequest) returns (GetMemberResponse);
   rpc CreateMember(CreateMemberRequest) returns (CreateMemberResponse);
+  rpc CreateMember2(CreateMemberRequest2) returns (CreateMemberResponse2);
+  rpc GetMember2(GetMemberRequest2) returns (GetMemberResponse2);
 }

@@ -32,12 +32,13 @@ func LoadEnabledExtensions(enabled map[string]IExtension, isDebug bool) {
 	for name, ext := range enabled {
 		extConfig := conf.GetStringMap(fmt.Sprintf("%s-%s", "extension", name))
 
+		log.Printf("Extension %s initialization begins", name)
 		err := ext.InitWithConf(extConfig, isDebug)
-
 		if err != nil {
 			log.Printf("[Error] Fail to init extension %s", name)
 			panic(err)
 		}
+		log.Printf("Extension %s initialized", name)
 	}
 }
 

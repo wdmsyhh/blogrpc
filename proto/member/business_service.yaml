@@ -4,10 +4,15 @@ config_version: 3
 http:
   rules:
     - selector: blogrpc.member.MemberService.GetMember
-      post: /v1/members/get
+      post: /v2/members/get
       body: "*"
       additional_bindings:
-        - get: /v1/members/{id}
+        - get: /v2/members/{id}
     - selector: blogrpc.member.MemberService.CreateMember
-      post: /v1/members
+      post: /v2/members
       body: "*"
+    - selector: blogrpc.member.MemberService.CreateMember2
+      post: /v2/members2
+      body: "*"
+    - selector: blogrpc.member.MemberService.GetMember2
+      get: /v2/members2/{id}

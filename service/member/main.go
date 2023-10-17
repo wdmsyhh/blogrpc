@@ -39,12 +39,13 @@ func main() {
 		log.Println("====IsRunningInContainer===")
 		log.Println(os.Getenv("MONGO_MASTER_DSN"))
 		log.Println(os.Getenv("MONGO_MASTER_REPLSET"))
+		log.Println(os.Getenv("MYSQL_MASTER_DSN"))
 	} else {
 		// 本地调试的时候使用
 		setEnv()
 	}
 
-	extension.LoadExtensionsByName([]string{"mgo"}, *env == Local)
+	extension.LoadExtensionsByName([]string{"mgo", "mysql"}, *env == Local)
 
 	server := grpc.NewServer()
 	member.RegisterMemberServiceServer(server, &service.MemberService{})

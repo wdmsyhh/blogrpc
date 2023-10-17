@@ -30,4 +30,31 @@ message CreateMemberResponse {
   string id = 1;
   string name = 2;
   int64 age = 3;
+  int64 id2 = 4;
+}
+
+message CreateMemberRequest2 {
+  // @required
+  //
+  // 商品名称
+  string name = 1; // valid:"required,objectId"
+  int64 age = 2;
+}
+
+message CreateMemberResponse2 {
+  int64 id = 1;
+  string name = 2;
+  int64 age = 3;
+}
+
+message GetMemberRequest2 {
+  // 客户 id
+  int64 id = 1;
+}
+
+message GetMemberResponse2 {
+  int64 id = 1;
+  string name = 2;
+  int64 age = 3;
+  string service = 4;
 }

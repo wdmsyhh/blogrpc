@@ -72,7 +72,7 @@ func main() {
 	engin.Use(controller.Auth)
 	engin.Use(middleware.ResponseWriterMiddleware{}.MiddlewareFunc())
 
-	engin.Any("/v1/*rest", func(c *gin.Context) {
+	engin.Any("/v2/*rest", func(c *gin.Context) {
 		mux.ServeHTTP(c.Writer, c.Request)
 	})
 
