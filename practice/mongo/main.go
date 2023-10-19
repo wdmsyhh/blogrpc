@@ -1,8 +1,8 @@
 package main
 
 import (
-	"blogrpc/core/extension/bson"
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -23,12 +23,13 @@ func main() {
 	//fmt.Println(client.Database("testdb").CreateCollection(ctx, "cola"))
 
 	col := client.Database("testdb").Collection("cola")
-	selector := bson.M{
-		"_id":       bson.ObjectIdHex("6480319cfbcabc003bd46004"),
+	id, _ := primitive.ObjectIDFromHex("6480319cfbcabc003bd46004")
+	selector := primitive.M{
+		"_id":       id,
 		"isDeleted": false,
 	}
-	updater := bson.M{
-		"$set": bson.M{
+	updater := primitive.M{
+		"$set": primitive.M{
 			"isDeleted": true,
 		},
 	}
