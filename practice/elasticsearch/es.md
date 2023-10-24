@@ -85,6 +85,10 @@ docker run --rm --name kibana \
   docker.elastic.co/kibana/kibana:7.10.2
 ```
 
+### 连接本地无密码 ES
+
+- kinaba
+
 ```shell
 docker run --rm --name kibana \
   -p 5601:5601 \
@@ -93,8 +97,17 @@ docker run --rm --name kibana \
   docker.elastic.co/kibana/kibana:7.10.1
 ```
 
+- head
+
 ```shell
+# elasticsearch 需要开启跨域
 docker run --rm --name es-head \
   -p 9100:9100 \
   mobz/elasticsearch-head:5
 ```
+
+- chrome extension
+
+这种方式，es 容器不用开启跨域。
+
+[https://chrome.google.com/webstore/search/elasticsearch%20head?utm_source=ext_app_menu](https://chrome.google.com/webstore/search/elasticsearch%20head?utm_source=ext_app_menu)
