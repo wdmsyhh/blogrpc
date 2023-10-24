@@ -64,6 +64,10 @@ ls dockerdata/kibana/config
 
 #docker cp kibana:/usr/share/kibana/config/kibana.yml /home/dockerdata/kibana/config/kibana.yml
 sudo docker cp kibana:/usr/share/kibana/config /home/dockerdata/kibana/config
+
+sudo chmod 777 dockerdata/kibana/config/kibana.yml
+# 设置中文 kibana.yml
+i18n.locale: "zh-CN"
 ```
 
 - 挂载
@@ -79,4 +83,18 @@ docker run --rm --name kibana \
   -e "ELASTICSEARCH_PASSWORD=root123" \
   --net my_default \
   docker.elastic.co/kibana/kibana:7.10.2
+```
+
+```shell
+docker run --rm --name kibana \
+  -p 5601:5601 \
+  -e "ELASTICSEARCH_HOSTS=http://infras-elasticsearch:9200" \
+  --net scrm_default \
+  docker.elastic.co/kibana/kibana:7.10.1
+```
+
+```shell
+docker run --rm --name es-head \
+  -p 9100:9100 \
+  mobz/elasticsearch-head:5
 ```
