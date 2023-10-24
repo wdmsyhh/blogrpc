@@ -19,7 +19,7 @@ metadata:
   # 部署名字
   name: openapi-business
 spec:
-  replicas: 2
+  replicas: 2 #更新 pod 数量，如果 imagePullPolicy: Always，新增的使用的是远程的新镜像
   # 用来查找关联的 Pod，所有标签都匹配才行
   selector:
     matchLabels:

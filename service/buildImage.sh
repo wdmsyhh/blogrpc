@@ -28,7 +28,7 @@ buildService() {
 
 export ENV=${ENV:-local}
 #export SERVICES=blogrpc-member,blogrpc-hello
-export SERVICES=blogrpc-member
+export SERVICES=blogrpc-hello
 # 用空格替换','来作为分隔符
 SERVICES=${SERVICES//,/ }
 
