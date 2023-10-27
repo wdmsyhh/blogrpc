@@ -32,4 +32,8 @@ services:
 volumes:
   es-data-es01: {}
 
-# 会自动创建出 elasticsearch_default 网络
+# 如果不加会自动创建出 elasticsearch_default 网络
+networks:
+  default:
+    external:
+      name: my_default

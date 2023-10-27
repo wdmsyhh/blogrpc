@@ -1,0 +1,12 @@
+version: '3'
+services:
+  monstache:
+    image: rwynn/monstache:rel6
+    volumes:
+      - ./config_for_docker.toml:/app/config.toml
+    command: -f /app/config.toml
+
+networks:
+  default:
+    external:
+      name: my_default
