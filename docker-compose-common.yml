@@ -5,12 +5,14 @@ services:
       ENV: local
       CACHE_HOST: redis
       CACHE_PORT: '6379'
-      CACHE_PASSWORD: ''
+      CACHE_PASSWORD: 'root123'
       RESQUE_HOST: redis
       RESQUE_PORT: '6379'
-      RESQUE_PASSWORD: ''
+      RESQUE_PASSWORD: 'root123'
       MONGO_MASTER_DSN: mongodb://root:root@mongo:27017/portal-master?authSource=admin
       MONGO_MASTER_REPLSET: none
+      # mysql 数据库不能加中划线，这里用下划线
+      MYSQL_MASTER_DSN: root:root123@tcp(mysql-test:3306)/portal_master?charset=utf8mb4&parseTime=True&loc=Local
   blogrpc:
     extends:
       service: common

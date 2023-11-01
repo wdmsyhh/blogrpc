@@ -14,7 +14,7 @@ type UserInfo struct {
 
 func main() {
 	// 连接数据库
-	dsn := "root:root123@tcp(127.0.0.1:3306)/portal_master?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root123@tcp(127.0.0.1:3306)/portal-master?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

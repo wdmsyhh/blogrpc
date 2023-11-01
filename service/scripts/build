@@ -17,6 +17,26 @@ REGISTRY_HOST=${REGISTRY_HOST:-"registry.ap-southeast-1.aliyuncs.com"}
 GOLANG_DOCKER_IMAGE="${REGISTRY_HOST}/yhhnamespace/base-golang:1.19.3-${ENV}"
 
 ##################################################
+# Copy configuration files to RPC service folders
+# Globals:
+#   WORK_DIR
+# Arguments:
+#   param1 - RPC repo name
+# Returns:
+#   None
+##################################################
+copy_conf_files() {
+  service=$1
+  echo ${service}
+  repo_path="${WORK_DIR}/${service}"
+  source_path="conf"
+
+  # copy common config file
+  cp -f ${ROOT_PATH}/conf/*.toml ${repo_path}/conf/
+  echo "Copied ${ROOT_PATH}/conf/*.toml file to ${repo_path}/conf/"
+}
+
+##################################################
 # Generate stub files
 # Globals:
 #   WORK_DIR
@@ -44,6 +64,19 @@ gen_proto_stub() {
 ##################################################
 iterate_service_repos() {
   iterate_repos "$1" SERVICE_LIST ${@:2}
+}
+
+##################################################
+# Initialize service folder with required binaries
+# Arguments:
+#   param1 - repo name (shared or service repo)
+# Returns:
+#   None
+##################################################
+init_service() {
+  repo="$1"
+  # Copy template and local configuration from wrapper project to repo
+  copy_conf_files "${repo}"
 }
 
 ##################################################
@@ -177,6 +210,8 @@ main() {
     echo "Compose up                                    "
     echo "=============================================="
     gen_proto_stub
+    ENV=local
+    iterate_service_repos 'init_service' ${@:2}
     stop ${@:2}
     iterate_service_repos 'start_service_with_compose' ${@:2}
     echo "RPC servers are started successful"
