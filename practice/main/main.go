@@ -1,6 +1,7 @@
 package main
 
 import (
+	"blogrpc/core/util"
 	"fmt"
 	"github.com/spf13/viper"
 	"os"
@@ -28,4 +29,6 @@ func main() {
 
 	fmt.Println(viper.GetString("vod-provider"))
 	fmt.Println(viper.GetString("env1"))
+
+	fmt.Println(util.GetIp())
 }
