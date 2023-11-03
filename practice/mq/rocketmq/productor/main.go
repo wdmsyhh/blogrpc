@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/apache/rocketmq-client-go/v2"
@@ -20,7 +19,7 @@ func main() {
 	err := p.Start()
 	if err != nil {
 		fmt.Printf("start producer error: %s", err.Error())
-		os.Exit(1)
+		return
 	}
 	topic := "testmq"
 
