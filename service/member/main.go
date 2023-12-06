@@ -2,7 +2,6 @@ package main
 
 import (
 	"blogrpc/core/constant"
-	"blogrpc/core/extension"
 	"blogrpc/core/util"
 	"blogrpc/proto/member"
 	"blogrpc/service/member/service"
@@ -53,7 +52,7 @@ func main() {
 		log.Println("strategy:", conf.Get("strategy"))
 	}
 
-	extension.LoadExtensionsByName([]string{"mgo", "mysql", "redis"}, *env == Local)
+	//extension.LoadExtensionsByName([]string{"mgo", "mysql", "redis"}, *env == Local)
 
 	server := grpc.NewServer()
 	member.RegisterMemberServiceServer(server, &service.MemberService{})

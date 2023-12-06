@@ -1,3 +1,8 @@
+# github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
+## explicit
+github.com/afex/hystrix-go/hystrix
+github.com/afex/hystrix-go/hystrix/metric_collector
+github.com/afex/hystrix-go/hystrix/rolling
 # github.com/apache/rocketmq-client-go/v2 v2.1.2
 ## explicit; go 1.13
 github.com/apache/rocketmq-client-go/v2
