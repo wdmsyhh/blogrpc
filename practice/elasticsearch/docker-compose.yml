@@ -1,7 +1,8 @@
 version: "3.7"
 services:
   elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"
+#    image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.16.3"
     container_name: elasticsearch_001
     ports:
       - "9200:9200"
@@ -10,7 +11,7 @@ services:
       node.name: es01
       discovery.type: single-node
       cluster.name: mycluster
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ES_JAVA_OPTS: -Xms1024m -Xmx1024m
     volumes:
       - "es-data-es01:/usr/share/elasticsearch/data"
     ulimits:
@@ -18,7 +19,8 @@ services:
         soft: -1
         hard: -1
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.10.2
+#    image: docker.elastic.co/kibana/kibana:7.10.2
+    image: docker.elastic.co/kibana/kibana:7.16.3
     container_name: kibana_001
     depends_on:
       - elasticsearch
@@ -28,7 +30,7 @@ services:
     environment:
       SERVERNAME: kibana
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-      ES_JAVA_OPTS: -Xmx512m -Xms512m
+      ES_JAVA_OPTS: -Xmx1024m -Xms1024m
 volumes:
   es-data-es01: {}
 
