@@ -12,7 +12,21 @@ docker run --name elasticsearch --rm -p 9200:9200 -p 9300:9300 \
     -e "ES_JAVA_OPTS=-Xmx512m -Xms512m" \
     --net my_default \
     docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    
+docker run --name elasticsearch -p 9200:9200 -p 9300:9300 \
+    -e "discovery.type=single-node" \
+    -e "xpack.security.enabled=false" \
+    -e "ES_JAVA_OPTS=-Xmx512m -Xms512m" \
+    --net my_default \
+    docker.elastic.co/elasticsearch/elasticsearch:7.10.2
 ```
+- 安装插件
+
+```shell
+# 进入容器
+./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.10.2/elasticsearch-analysis-ik-7.10.2.zip
+```
+
 - 访问测试
 ```shell
 curl localhost:9200

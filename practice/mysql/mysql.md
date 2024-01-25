@@ -13,4 +13,10 @@ show databases;
 
 # mysql 数据库不能加中划线，这里用下划线
 CREATE DATABASE portal_master;
+# 选择数据库 
+use portal_master;
+# 查看当前使用的哪个库（3种方式）
+show tables;
+select database();
+status;
 ```
