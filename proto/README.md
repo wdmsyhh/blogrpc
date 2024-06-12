@@ -1,5 +1,3 @@
-支持自定义 tag: https://github.com/golang/protobuf/issues/52
-
 --go_out参数用来指定 protoc-gen-go 插件的工作方式和go代码的生成位置
 
 --go_out主要的两个参数为 plugins 和 paths，分别表示生成go代码所使用的插件和生成的go代码的位置。
@@ -11,6 +9,9 @@
 paths参数有两个选项，分别是 import 和 source_relative， 默认为 import ，表示按照生成的go代码的包的全路径去创建目录层级，source_relative 表示按照proto源文件的目录层级去创建go代码的目录层级。
 
 假如 ken 目录下有 hello.proto 内容如下：
+
+https://github.com/golang/protobuf/issues/52
+
 ```protobuf
 syntax = "proto3";
 
