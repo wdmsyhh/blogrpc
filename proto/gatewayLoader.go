@@ -1,20 +1,28 @@
 package proto
 
 import (
+	"context"
+	"net/http"
+	"time"
+
 	"blogrpc/core/constant"
+	"blogrpc/core/errors"
 	"blogrpc/proto/hello"
 	"blogrpc/proto/member"
-	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
-	"net/http"
 )
 
 func NewGateway(ctx context.Context) (http.Handler, error) {
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 		OrigName:     true,
 		EmitDefaults: true,
-	}), runtime.WithIncomingHeaderMatcher(headerMatcherFunc))
+	}), runtime.WithIncomingHeaderMatcher(headerMatcherFunc),
+		runtime.WithProtoErrorHandler(errors.CustomHTTPError))
+
+	//runtime.HTTPError = errors.HTTPError2
+	//runtime.OtherErrorHandler = errors.OtherErrorHandler
+	runtime.DefaultContextTimeout = 10 * time.Second
 
 	var err error
 

@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/textproto"
+	"strings"
 
 	core_util "blogrpc/core/util"
 	"github.com/golang/protobuf/proto"
@@ -60,6 +61,50 @@ func HTTPError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Mar
 	}
 
 	handleForwardResponseTrailer(w, md)
+}
+
+// CustomHTTPError Custom HTTP error handler
+func CustomHTTPError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+	s, body := parseErr(err)
+	body.RequestId = w.Header().Get(core_util.RequestIDKey)
+	w.Header().Set("Content-Type", marshaler.ContentType())
+
+	// 分割字符串
+	parts := strings.Split(body.Message, "\n\n")
+	if len(parts) < 1 {
+		fmt.Println("Invalid input format")
+		return
+	}
+
+	// 提取各部分
+	var errorCode, errorMsg, errorDetailsJSON string
+	for i := range parts {
+		if i == 0 {
+			errorCode = parts[i]
+		}
+		if i == 1 {
+			errorMsg = parts[i]
+		}
+		if i == 2 {
+			errorDetailsJSON = parts[i]
+		}
+	}
+
+	if errorCode == "1000001" || errorCode == "1000004" {
+		w.WriteHeader(runtime.HTTPStatusFromCode(codes.Internal))
+	} else if s.Code() != codes.Unknown {
+		w.WriteHeader(runtime.HTTPStatusFromCode(s.Code()))
+	} else {
+		w.WriteHeader(runtime.HTTPStatusFromCode(codes.InvalidArgument))
+	}
+
+	customError := map[string]interface{}{
+		"code":      errorCode,
+		"message":   errorMsg,
+		"errors":    errorDetailsJSON,
+		"requestId": w.Header().Get(core_util.RequestIDKey),
+	}
+	marshaler.NewEncoder(w).Encode(customError)
 }
 
 func newInvalidArgumentStatus() *status.Status {

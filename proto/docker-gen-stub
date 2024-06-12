@@ -125,7 +125,7 @@ clean() {
   set +e
   shopt -s globstar
 
-  rm -f ./**/*.pb.go
+  #rm -f ./**/*.pb.go
   #rm -f ./**/*.gw.go
   rm -f ./**/*.swagger.json
 

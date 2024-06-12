@@ -1,17 +1,41 @@
 package service
 
 import (
+	"context"
+	"os"
+
 	"blogrpc/core/client"
+	"blogrpc/core/errors"
 	"blogrpc/core/util"
 	"blogrpc/proto/hello"
 	"blogrpc/proto/member"
+	"blogrpc/service/member/codes"
 	"blogrpc/service/member/model"
-	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"os"
+	grpc_codes "google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (MemberService) GetMember(ctx context.Context, req *member.GetMemberRequest) (*member.GetMemberResponse, error) {
+
+	if req.Id == "error" {
+		return nil, errors.NewInvalidArgumentError("memberId")
+	}
+	if req.Id == "error1" {
+		return nil, errors.NewInvalidArgumentErrorWithMessage("memberId", "错误了")
+	}
+	if req.Id == "error2" {
+		return nil, errors.NewNotExistsError("member")
+	}
+	if req.Id == "error3" {
+		return nil, codes.NewError(codes.MemberNotFound)
+	}
+	if req.Id == "error4" {
+		return nil, status.Errorf(grpc_codes.InvalidArgument, "member not found")
+	}
+	if req.Id == "error5" {
+		return nil, errors.NewInternal("ssss")
+	}
 
 	resp := &member.GetMemberResponse{}
 
