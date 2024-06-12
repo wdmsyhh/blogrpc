@@ -1,19 +1,20 @@
 package main
 
 import (
-	"blogrpc/core/util"
-	"blogrpc/openapi/business/controller"
-	"blogrpc/openapi/business/middleware"
-	"blogrpc/openapi/business/server"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	flag "github.com/spf13/pflag"
-	conf "github.com/spf13/viper"
-	"gopkg.in/tylerb/graceful.v1"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"blogrpc/core/util"
+	"blogrpc/openapi/business/controller"
+	"blogrpc/openapi/business/middleware"
+	"blogrpc/openapi/business/server"
+	"github.com/gin-gonic/gin"
+	flag "github.com/spf13/pflag"
+	conf "github.com/spf13/viper"
+	"gopkg.in/tylerb/graceful.v1"
 )
 
 var (
@@ -53,6 +54,10 @@ func main() {
 
 	engin := gin.New()
 	engin.Use(gin.Recovery())
+
+	rewrite := &middleware.RewriteMiddleware{}
+	engin.Use(rewrite.MiddlewareFunc())
+
 	engin.GET("/ping", func(c *gin.Context) {
 		hostname, _ := os.Hostname()
 		c.JSON(http.StatusOK, map[string]interface{}{

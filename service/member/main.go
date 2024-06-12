@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"blogrpc/core/constant"
+	"blogrpc/core/interceptor"
 	"blogrpc/core/util"
 	"blogrpc/proto/member"
 	"blogrpc/service/member/service"
@@ -55,7 +56,8 @@ func main() {
 
 	//extension.LoadExtensionsByName([]string{"mgo", "mysql", "redis"}, *env == Local)
 
-	server := grpc.NewServer()
+	recoveryInterceptor := &interceptor.RecoveryInterceptor{}
+	server := grpc.NewServer(grpc.UnaryInterceptor(recoveryInterceptor.Handle))
 	member.RegisterMemberServiceServer(server, &service.MemberService{})
 	reflection.Register(server)
 	err = server.Serve(lis)
