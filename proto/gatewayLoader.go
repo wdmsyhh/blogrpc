@@ -26,12 +26,12 @@ func NewGateway(ctx context.Context) (http.Handler, error) {
 
 	var err error
 
-	err = hello.RegisterHelloServiceHandlerFromEndpoint(ctx, mux, constant.SERVICE_HELLO_HOST+":"+constant.SERVICE_HELLO_PORT, []grpc.DialOption{grpc.WithInsecure()})
+	err = hello.RegisterHelloServiceHandlerFromEndpoint(ctx, mux, constant.ServiceHelloHost+":"+constant.ServiceHelloPort, []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return nil, err
 	}
 
-	err = member.RegisterMemberServiceHandlerFromEndpoint(ctx, mux, constant.SERVICE_MEMBER_HOST+":"+constant.SERVICE_MEMBER_PORT, []grpc.DialOption{grpc.WithInsecure()})
+	err = member.RegisterMemberServiceHandlerFromEndpoint(ctx, mux, constant.ServiceMemberHost+":"+constant.ServiceMemberPort, []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return nil, err
 	}

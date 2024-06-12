@@ -1,20 +1,21 @@
 package main
 
 import (
-	"blogrpc/core/constant"
-	"blogrpc/core/util"
-	"blogrpc/proto/member"
-	"blogrpc/service/member/service"
 	"fmt"
-	flag "github.com/spf13/pflag"
-	conf "github.com/spf13/viper"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"blogrpc/core/constant"
+	"blogrpc/core/util"
+	"blogrpc/proto/member"
+	"blogrpc/service/member/service"
+	flag "github.com/spf13/pflag"
+	conf "github.com/spf13/viper"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -30,7 +31,7 @@ func main() {
 
 	signal.Ignore(syscall.SIGHUP)
 
-	lis, err := net.Listen("tcp", ":"+constant.SERVICE_MEMBER_PORT)
+	lis, err := net.Listen("tcp", ":"+constant.ServiceMemberPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
