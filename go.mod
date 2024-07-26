@@ -12,6 +12,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/golang/protobuf v1.5.3
 	github.com/gomodule/redigo v1.8.9
+	github.com/google/wire v0.6.0
 	github.com/gorilla/schema v1.2.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
@@ -32,8 +33,8 @@ require (
 	github.com/urfave/cli/v2 v2.27.3
 	github.com/xuri/excelize/v2 v2.6.1
 	go.mongodb.org/mongo-driver v1.9.0
-	golang.org/x/net v0.8.0
-	golang.org/x/sync v0.1.0
+	golang.org/x/net v0.20.0
+	golang.org/x/sync v0.6.0
 	google.golang.org/grpc v1.51.0
 	gopkg.in/tylerb/graceful.v1 v1.2.15
 	gorm.io/driver/mysql v1.5.2
@@ -102,9 +103,9 @@ require (
 	github.com/xuri/nfp v0.0.0-20220409054826-5e722a1d9e22 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8 // indirect
-	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
