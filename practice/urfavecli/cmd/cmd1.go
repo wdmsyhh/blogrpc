@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"blogrpc/practice/urfavecli/router"
 	"github.com/urfave/cli/v2"
 )
@@ -17,9 +19,17 @@ func NewCmd1(router *router.Cmd1Router) Cmd1 {
 				Usage:    "--addr=:8081",
 				Required: true,
 			},
+			&cli.StringFlag{
+				Name:     "name",
+				Usage:    "--name=你好$小明",
+				Required: false,
+			},
 		},
 		Action: func(c *cli.Context) error {
 			addr := c.String("addr")
+
+			name := c.String("name")
+			fmt.Println(name)
 
 			return router.Run(c.Context, addr)
 		},
