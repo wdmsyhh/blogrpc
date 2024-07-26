@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: echo-pod
+spec:
+  containers:
+    - name: echo-container
+      image: ubuntu:jammy
+      command: ["/bin/bash", "-c"]
+      args: ["echo '你好$小明'"]
+  restartPolicy: Never
