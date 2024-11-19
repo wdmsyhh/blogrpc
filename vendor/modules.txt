@@ -3,6 +3,19 @@
 github.com/afex/hystrix-go/hystrix
 github.com/afex/hystrix-go/hystrix/metric_collector
 github.com/afex/hystrix-go/hystrix/rolling
+# github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a
+## explicit
+github.com/alicebob/gopher-json
+# github.com/alicebob/miniredis/v2 v2.33.0
+## explicit; go 1.17
+github.com/alicebob/miniredis/v2
+github.com/alicebob/miniredis/v2/fpconv
+github.com/alicebob/miniredis/v2/geohash
+github.com/alicebob/miniredis/v2/hyperloglog
+github.com/alicebob/miniredis/v2/metro
+github.com/alicebob/miniredis/v2/proto
+github.com/alicebob/miniredis/v2/server
+github.com/alicebob/miniredis/v2/size
 # github.com/apache/rocketmq-client-go/v2 v2.1.2
 ## explicit; go 1.13
 github.com/apache/rocketmq-client-go/v2
@@ -18,6 +31,9 @@ github.com/apache/rocketmq-client-go/v2/rlog
 # github.com/armon/go-metrics v0.4.0
 ## explicit; go 1.12
 github.com/armon/go-metrics
+# github.com/cespare/xxhash/v2 v2.2.0
+## explicit; go 1.11
+github.com/cespare/xxhash/v2
 # github.com/coreos/go-semver v0.3.0
 ## explicit
 github.com/coreos/go-semver/semver
@@ -33,6 +49,9 @@ github.com/davecgh/go-spew/spew
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
+# github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
+## explicit
+github.com/dgryski/go-rendezvous
 # github.com/elazarl/goproxy v0.0.0-20221015165544-a0805db90819
 ## explicit
 # github.com/emicklei/go-restful/v3 v3.11.0
@@ -300,6 +319,16 @@ github.com/qiniu/qmgo/middleware
 github.com/qiniu/qmgo/operator
 github.com/qiniu/qmgo/options
 github.com/qiniu/qmgo/validator
+# github.com/redis/go-redis/v9 v9.7.0
+## explicit; go 1.18
+github.com/redis/go-redis/v9
+github.com/redis/go-redis/v9/internal
+github.com/redis/go-redis/v9/internal/hashtag
+github.com/redis/go-redis/v9/internal/hscan
+github.com/redis/go-redis/v9/internal/pool
+github.com/redis/go-redis/v9/internal/proto
+github.com/redis/go-redis/v9/internal/rand
+github.com/redis/go-redis/v9/internal/util
 # github.com/richardlehane/mscfb v1.0.4
 ## explicit
 github.com/richardlehane/mscfb
@@ -395,6 +424,12 @@ github.com/xuri/nfp
 # github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d
 ## explicit
 github.com/youmark/pkcs8
+# github.com/yuin/gopher-lua v1.1.1
+## explicit; go 1.17
+github.com/yuin/gopher-lua
+github.com/yuin/gopher-lua/ast
+github.com/yuin/gopher-lua/parse
+github.com/yuin/gopher-lua/pm
 # go.etcd.io/etcd/api/v3 v3.5.11
 ## explicit; go 1.20
 go.etcd.io/etcd/api/v3/authpb
