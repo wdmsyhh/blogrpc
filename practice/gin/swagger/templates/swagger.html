@@ -1,0 +1,67 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+    <style>
+        html { box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body { margin: 0; padding: 0; }
+        .swagger-ui { margin: 20px; }
+        .select-container { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="select-container">
+    <label for="api-select">Select API:</label>
+    <select id="api-select">
+        {{ range .files }}
+        <option value="https://git.xxx.cn/testgroup/testprojectname/-/raw/master/{{ .Path }}">{{ .Path }}</option>-->
+        {{ end }}
+    </select>
+    <button id="load-api">Load API</button>
+</div>
+<div id="swagger-ui"></div>
+<script>
+    let ui = SwaggerUIBundle({
+        // url: document.getElementById('api-select').value, // 默认加载第一个 API
+        // url: "https://petstore.swagger.io/v2/swagger.json",
+        url: "./openapi.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+        ],
+        plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+    });
+
+    document.getElementById('load-api').onclick = function() {
+        const selectedApi = document.getElementById('api-select').value;
+        console.log("Loading API:", selectedApi); // 调试信息
+
+        // 重新初始化 Swagger UI 实例
+        ui = SwaggerUIBundle({
+            url: "./openapi2.yaml", // 动态加载选定的 API
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout"
+        });
+    }
+</script>
+</body>
+</html>

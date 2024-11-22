@@ -1,0 +1,149 @@
+swagger: "2.0"
+info:
+    version: "1.0.0"
+    title: "Todo MVC1"
+host: "api.todo.com"
+basePath: "/api"
+tags:
+    - name: "plans"
+    - name: "user"
+paths:
+    /plans:
+        post:
+            tags:
+                - "plans"
+            summary: "新增计划aa"
+            parameters:
+                - in: "body"
+                  name: "plan"
+                  description: "计划实体"
+                  required: true
+                  schema:
+                      $ref: '#/definitions/Plan'
+            responses:
+                "200":
+                    description: "成功响应"
+                    schema:
+                        $ref: '#/definitions/ApiResponse'
+        get:
+            tags:
+                - "plans"
+            summary: "返回计划列表"
+            responses:
+                "200":
+                    description: "成功响应"
+                    schema:
+                        $ref: '#/definitions/ApiPlanListResponse'
+    
+    /plans/{id}:
+        delete:
+            tags:
+                - "plans"
+            summary: "删除计划"
+            parameters:
+                - in: "path"
+                  name: "id"
+                  description: "计划 ID"
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "成功响应"
+                    schema:
+                        $ref: '#/definitions/ApiResponse'
+
+    /plans/batchDelete:
+        post:
+            tags:
+                - "plans"
+            summary: "批量删除已完成计划"
+            parameters:
+                - in: "body"
+                  name: "idList"
+                  description: "ID 集合"
+                  required: true
+                  schema:
+                      $ref: '#/definitions/IdList'
+            responses:
+                "200":
+                    description: "成功响应"
+                    schema:
+                        $ref: '#/definitions/ApiResponse'
+
+    /user/login:
+        post:
+            tags:
+                - "user"
+            summary: "用户登陆"
+            parameters:
+                - in: "body"
+                  name: "user"
+                  description: "计划实体"
+                  required: true
+                  schema:
+                      $ref: '#/definitions/User'
+            responses:
+                "200":
+                    description: "成功响应"
+                    schema:
+                        $ref: '#/definitions/ApiResponse'
+    /user/logout:
+        post:
+            tags:
+                - "user"
+            summary: "用户退出"
+            responses:
+                "200":
+                    description: "成功响应"
+                    schema:
+                        $ref: '#/definitions/ApiResponse'
+
+definitions:
+    Plan:
+        type: "object"
+        properties:
+            id:
+                type: "string"
+                description: "ID"
+            name:
+                type: "string"
+                description: "计划名称"
+    User:
+        type: "object"
+        properties:
+            username:
+                type: "string"
+                description: "用户名"
+            password:
+                type: "string"
+                description: "密码"
+    ApiResponse:
+        type: "object"
+        properties:
+            code:
+                type: "integer"
+                format: "int32"
+                description: "返回码"
+            message:
+                type: "string"
+                description: "返回信息"
+    PlanList:
+        type: "array"
+        items:
+            $ref: '#/definitions/Plan'
+    IdList:
+        type: "array"
+        items:
+            type: "string"
+    ApiPlanListResponse:
+        type: "object"
+        properties:
+            code:
+                type: "integer"
+                format: "int32"
+                description: "返回码"
+            message:
+                type: "string"
+                description: "返回信息"
+            data:
+                $ref: '#/definitions/PlanList'
